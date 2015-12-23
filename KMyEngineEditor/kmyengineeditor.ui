@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui version="4.0">
+  <class>KMyEngineEditorClass</class>
+  <widget class="QMainWindow" name="KMyEngineEditorClass">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1340</width>
+        <height>858</height>
+      </rect>
+    </property>
+    <property name="windowTitle">
+      <string>KMyEngineEditor</string>
+    </property>
+    <widget class="QWidget" name="centralWidget">
+      <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+        </sizepolicy>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,5">
+        <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+              <widget class="QListWidget" name="listWidget">
+                <item>
+                  <property name="text">
+                    <string>层次面板</string>
+                  </property>
+                </item>
+              </widget>
+            </item>
+          </layout>
+        </item>
+        <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="5,1">
+            <item>
+              <layout class="QHBoxLayout" name="EngineGridLayout"/>
+            </item>
+            <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                  <widget class="QTabWidget" name="tabWidget">
+                    <property name="currentIndex">
+                      <number>0</number>
+                    </property>
+                    <widget class="QWidget" name="tab">
+                      <attribute name="title">
+                        <string>地形生成算法</string>
+                      </attribute>
+                      <widget class="QGroupBox" name="groupBox">
+                        <property name="geometry">
+                          <rect>
+                            <x>20</x>
+                            <y>10</y>
+                            <width>411</width>
+                            <height>81</height>
+                          </rect>
+                        </property>
+                        <property name="title">
+                          <string>通用参数</string>
+                        </property>
+                        <widget class="QLabel" name="label">
+                          <property name="geometry">
+                            <rect>
+                              <x>30</x>
+                              <y>20</y>
+                              <width>71</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>地形分辨率</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_2048">
+                          <property name="geometry">
+                            <rect>
+                              <x>50</x>
+                              <y>40</y>
+                              <width>89</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>2048*2048</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_1024">
+                          <property name="geometry">
+                            <rect>
+                              <x>140</x>
+                              <y>40</y>
+                              <width>89</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>1024*1024</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_64">
+                          <property name="geometry">
+                            <rect>
+                              <x>140</x>
+                              <y>60</y>
+                              <width>89</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>64*64</string>
+                          </property>
+                        </widget>
+                        <widget class="QLabel" name="label_3">
+                          <property name="geometry">
+                            <rect>
+                              <x>230</x>
+                              <y>20</y>
+                              <width>71</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>CellSpacing</string>
+                          </property>
+                        </widget>
+                        <widget class="QTextEdit" name="TEXT_CellSpacing">
+                          <property name="geometry">
+                            <rect>
+                              <x>260</x>
+                              <y>40</y>
+                              <width>104</width>
+                              <height>31</height>
+                            </rect>
+                          </property>
+                          <property name="tabStopWidth">
+                            <number>60</number>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_512">
+                          <property name="geometry">
+                            <rect>
+                              <x>50</x>
+                              <y>60</y>
+                              <width>89</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>512*512</string>
+                          </property>
+                        </widget>
+                      </widget>
+                      <widget class="QGroupBox" name="groupBox_2">
+                        <property name="geometry">
+                          <rect>
+                            <x>440</x>
+                            <y>10</y>
+                            <width>511</width>
+                            <height>80</height>
+                          </rect>
+                        </property>
+                        <property name="title">
+                          <string>算法选择</string>
+                        </property>
+                        <widget class="QRadioButton" name="RBTN_QuadTreeLod1">
+                          <property name="geometry">
+                            <rect>
+                              <x>30</x>
+                              <y>30</y>
+                              <width>171</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>四叉树+Section IB变VB定</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_QuadTreeLod2">
+                          <property name="geometry">
+                            <rect>
+                              <x>30</x>
+                              <y>60</y>
+                              <width>161</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>网络学习四叉树LOD地形</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_QuadTreeLOD3">
+                          <property name="geometry">
+                            <rect>
+                              <x>200</x>
+                              <y>30</y>
+                              <width>171</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>四叉树+Section IB变VB定</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_QuadTreeLOD4">
+                          <property name="geometry">
+                            <rect>
+                              <x>200</x>
+                              <y>60</y>
+                              <width>171</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>四叉树+Section IB变VB定</string>
+                          </property>
+                        </widget>
+                        <widget class="QRadioButton" name="RBTN_DX11Tesslation">
+                          <property name="geometry">
+                            <rect>
+                              <x>370</x>
+                              <y>30</y>
+                              <width>171</width>
+                              <height>16</height>
+                            </rect>
+                          </property>
+                          <property name="text">
+                            <string>DX11曲面细分</string>
+                          </property>
+                        </widget>
+                      </widget>
+                      <widget class="QPushButton" name="BTN_CreateTerrain">
+                        <property name="geometry">
+                          <rect>
+                            <x>960</x>
+                            <y>60</y>
+                            <width>101</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>生成地形</string>
+                        </property>
+                      </widget>
+                      <widget class="QPushButton" name="BTN_LoadHeightMap">
+                        <property name="geometry">
+                          <rect>
+                            <x>960</x>
+                            <y>20</y>
+                            <width>101</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>加载高度图</string>
+                        </property>
+                      </widget>
+                    </widget>
+                    <widget class="QWidget" name="tab_2">
+                      <attribute name="title">
+                        <string>地形细节选项</string>
+                      </attribute>
+                      <widget class="QPushButton" name="pushButton_15">
+                        <property name="geometry">
+                          <rect>
+                            <x>560</x>
+                            <y>10</y>
+                            <width>111</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>添加静态云</string>
+                        </property>
+                      </widget>
+                      <widget class="QPushButton" name="pushButton_16">
+                        <property name="geometry">
+                          <rect>
+                            <x>680</x>
+                            <y>10</y>
+                            <width>101</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>开启天空盒</string>
+                        </property>
+                      </widget>
+                      <widget class="QPushButton" name="pushButton_17">
+                        <property name="geometry">
+                          <rect>
+                            <x>200</x>
+                            <y>10</y>
+                            <width>171</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>五层纹理混合</string>
+                        </property>
+                      </widget>
+                      <widget class="QSlider" name="horizontalSlider_5">
+                        <property name="geometry">
+                          <rect>
+                            <x>410</x>
+                            <y>60</y>
+                            <width>131</width>
+                            <height>19</height>
+                          </rect>
+                        </property>
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                      </widget>
+                      <widget class="QLabel" name="label_5">
+                        <property name="geometry">
+                          <rect>
+                            <x>380</x>
+                            <y>60</y>
+                            <width>54</width>
+                            <height>12</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>深度</string>
+                        </property>
+                      </widget>
+                      <widget class="QLabel" name="label_2">
+                        <property name="geometry">
+                          <rect>
+                            <x>210</x>
+                            <y>60</y>
+                            <width>54</width>
+                            <height>12</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>offset</string>
+                        </property>
+                      </widget>
+                      <widget class="QLabel" name="label_6">
+                        <property name="geometry">
+                          <rect>
+                            <x>10</x>
+                            <y>60</y>
+                            <width>54</width>
+                            <height>12</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>tiling</string>
+                        </property>
+                      </widget>
+                      <widget class="QSlider" name="horizontalSlider_6">
+                        <property name="geometry">
+                          <rect>
+                            <x>60</x>
+                            <y>60</y>
+                            <width>121</width>
+                            <height>19</height>
+                          </rect>
+                        </property>
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                      </widget>
+                      <widget class="QPushButton" name="pushButton_20">
+                        <property name="geometry">
+                          <rect>
+                            <x>10</x>
+                            <y>10</y>
+                            <width>181</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>一层纹理测试</string>
+                        </property>
+                      </widget>
+                      <widget class="QPushButton" name="pushButton_21">
+                        <property name="geometry">
+                          <rect>
+                            <x>380</x>
+                            <y>10</y>
+                            <width>161</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>DetailMap细节纹理</string>
+                        </property>
+                      </widget>
+                      <widget class="QSlider" name="horizontalSlider_2">
+                        <property name="geometry">
+                          <rect>
+                            <x>249</x>
+                            <y>60</y>
+                            <width>121</width>
+                            <height>20</height>
+                          </rect>
+                        </property>
+                        <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                        </property>
+                      </widget>
+                      <widget class="QPushButton" name="pushButton_22">
+                        <property name="geometry">
+                          <rect>
+                            <x>560</x>
+                            <y>50</y>
+                            <width>111</width>
+                            <height>31</height>
+                          </rect>
+                        </property>
+                        <property name="text">
+                          <string>添加动态云</string>
+                        </property>
+                      </widget>
+                    </widget>
+                    <widget class="QWidget" name="tab_7">
+                      <attribute name="title">
+                        <string>地形高度编辑</string>
+                      </attribute>
+                    </widget>
+                  </widget>
+                </item>
+              </layout>
+            </item>
+          </layout>
+        </item>
+      </layout>
+    </widget>
+    <widget class="QMenuBar" name="menuBar">
+      <property name="geometry">
+        <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>1340</width>
+          <height>23</height>
+        </rect>
+      </property>
+      <widget class="QMenu" name="menu">
+        <property name="title">
+          <string>场景文件</string>
+        </property>
+        <addaction name="actionXinjianchangjing"/>
+        <addaction name="actionChangjingbaocun"/>
+      </widget>
+      <widget class="QMenu" name="menu_2">
+        <property name="title">
+          <string>模型编辑器</string>
+        </property>
+      </widget>
+      <widget class="QMenu" name="menu_3">
+        <property name="title">
+          <string>灯光</string>
+        </property>
+      </widget>
+      <addaction name="menu"/>
+      <addaction name="menu_2"/>
+      <addaction name="menu_3"/>
+    </widget>
+    <widget class="QToolBar" name="mainToolBar">
+      <attribute name="toolBarArea">
+        <enum>TopToolBarArea</enum>
+      </attribute>
+      <attribute name="toolBarBreak">
+        <bool>false</bool>
+      </attribute>
+    </widget>
+    <widget class="QStatusBar" name="statusBar"/>
+    <action name="actionXinjianchangjing">
+      <property name="text">
+        <string>新建场景</string>
+      </property>
+    </action>
+    <action name="actionChangjingbaocun">
+      <property name="text">
+        <string>保存场景</string>
+      </property>
+    </action>
+  </widget>
+  <layoutdefault spacing="6" margin="11"/>
+  <resources>
+    <include location="kmyengineeditor.qrc"/>
+  </resources>
+  <connections/>
+</ui>
