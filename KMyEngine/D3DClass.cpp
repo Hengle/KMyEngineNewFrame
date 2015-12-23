@@ -26,15 +26,15 @@ D3DClass::~D3DClass()
 }
 
 
-bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen, 
-						  float screenDepth, float screenNear)
+bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hwnd, bool fullscreen)
 {
 	//---------------------------------------------------------------------------------------
 	// 1.创建设备及设备上下文 
 	//---------------------------------------------------------------------------------------
 	UINT createDeviceFlag = 0;
 	md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
-	mEnable4xMsaa = false;
+	mEnable4xMsaa = true;
+	m_vsync_enabled = true;
 
 #if defined(DEBUG) || defined(_DEBUG)
 	createDeviceFlag |= D3D11_CREATE_DEVICE_DEBUG;
@@ -74,7 +74,7 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	if (mEnable4xMsaa)
 	{
 		sd.SampleDesc.Count = 4;
-		sd.SampleDesc.Quality = m4xMsaaQuality - 1;
+		sd.SampleDesc.Quality = m4xMsaaQuality -1;
 	}
 	else
 	{
@@ -106,6 +106,48 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 	ReleaseCOM(dxgiFactory);
 
 	OnResize(screenWidth,screenHeight);	
+
+
+	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
+	depthDisabledStencilDesc.DepthEnable = false;
+	depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthDisabledStencilDesc.StencilEnable = true;
+	depthDisabledStencilDesc.StencilReadMask = 0xFF;
+	depthDisabledStencilDesc.StencilWriteMask = 0xFF;
+	depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	HR(m_device->CreateDepthStencilState(&depthDisabledStencilDesc, &m_depthDisabledStencilState));
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	depthStencilDesc.StencilEnable = true;
+	depthStencilDesc.StencilReadMask = 0xFF;
+	depthStencilDesc.StencilWriteMask = 0xFF;
+
+	// Stencil operations if pixel is front-facing.
+	depthStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	// Stencil operations if pixel is back-facing.
+	depthStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	depthStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	depthStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	HR(m_device->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState));
 
 	return true;
 }
@@ -198,6 +240,9 @@ void D3DClass::Shutdown()
 	ReleaseCOM(m_renderTargetView);
 	ReleaseCOM(m_depthStencilBuffer);
 	ReleaseCOM(m_depthStencilView);
+
+	ReleaseCOM(m_depthStencilState);
+	ReleaseCOM(m_depthDisabledStencilState);
 	
 	return;
 }
@@ -250,4 +295,41 @@ ID3D11DeviceContext* D3DClass::GetDeviceContext()
 float D3DClass::GetAspectRatio()
 {
 	return static_cast<float>(m_clientWidth) / (m_clientHeight);
+}
+
+int D3DClass::GetClientWidth()
+{
+	return m_clientWidth;
+}
+int D3DClass::GetClientHeight()
+{
+	return m_clientHeight;
+}
+
+
+void D3DClass::TurnZBufferOn()
+{
+	m_deviceContext->OMSetDepthStencilState(m_depthStencilState, 1);
+	return;
+}
+
+
+void D3DClass::TurnZBufferOff()
+{
+	m_deviceContext->OMSetDepthStencilState(m_depthDisabledStencilState, 1);
+	return;
+}
+
+void D3DClass::SetBackBufferRenderTarget()
+{
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
+
+	return;
+}
+
+void D3DClass::ResetViewport()
+{
+	m_deviceContext->RSSetViewports(1, &mScreenViewport);
+
+	return;
 }

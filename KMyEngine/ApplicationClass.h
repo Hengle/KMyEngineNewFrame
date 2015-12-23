@@ -17,6 +17,8 @@
 #include "MyTestInterfaces.h"
 #include "InputClass.h"
 
+#include "DeferredShading/DeferredBuffersClass.h"
+#include "DeferredShading/OrthoWindowClass.h"
 
 /////////////
 // GLOBALS //
@@ -51,6 +53,11 @@ public:
 private:
 	bool Render();
 
+	bool RenderMultiShaderTest();
+
+	bool RenderSceneToTexture();
+	bool RenderDeferredShadingTest();
+
 private:
 	D3DClass* m_D3D;
 	//InputClass* m_Input;
@@ -60,6 +67,11 @@ private:
 	ModelClass* m_Model1;
 	ModelClass* m_Model2;
 	BumpModelClass* m_Model3;
+
+	DeferredBuffersClass m_dsBufferClass;
+	OrthoWindowClass m_orthoWindowClass;
+
+	bool isNotFirst;
 
 	POINT	mLastMousePos;
 };

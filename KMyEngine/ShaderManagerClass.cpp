@@ -9,6 +9,9 @@ ShaderManagerClass::ShaderManagerClass()
 	m_TextureShader = 0;
 	m_LightShader = 0;
 	m_BumpMapShader = 0;
+
+	m_dsLight = 0;
+	m_deferredShading = 0;
 }
 
 
@@ -27,14 +30,12 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 	bool result;
 
 
-	// Create the texture shader object.
 	m_TextureShader = new TextureShaderClass;
 	if(!m_TextureShader)
 	{
 		return false;
 	}
 
-	// Initialize the texture shader object.
 	result = m_TextureShader->Initialize(device, hwnd);
 	if(!result)
 	{
@@ -42,14 +43,12 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
-	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
 	if(!m_LightShader)
 	{
 		return false;
 	}
 
-	// Initialize the light shader object.
 	result = m_LightShader->Initialize(device, hwnd);
 	if(!result)
 	{
@@ -57,18 +56,38 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
-	// Create the bump map shader object.
 	m_BumpMapShader = new BumpMapShaderClass;
 	if(!m_BumpMapShader)
 	{
 		return false;
 	}
 
-	// Initialize the bump map shader object.
 	result = m_BumpMapShader->Initialize(device, hwnd);
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the bump map shader object.", L"Error", MB_OK);
+		return false;
+	}
+
+	m_deferredShading = new DeferredShaderClass;
+	if (!m_deferredShading)
+	{
+		return false;
+	}
+	result = m_deferredShading->Initialize(device,hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
+	m_dsLight = new CDeferredShadingLightShaderClass;
+	if (!m_dsLight)
+	{
+		return false;
+	}
+	result = m_dsLight->Initialize(device,hwnd);
+	if (!result)
+	{
 		return false;
 	}
 
@@ -78,7 +97,6 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 
 void ShaderManagerClass::Shutdown()
 {
-	// Release the bump map shader object.
 	if(m_BumpMapShader)
 	{
 		m_BumpMapShader->Shutdown();
@@ -86,7 +104,6 @@ void ShaderManagerClass::Shutdown()
 		m_BumpMapShader = 0;
 	}
 
-	// Release the light shader object.
 	if(m_LightShader)
 	{
 		m_LightShader->Shutdown();
@@ -94,12 +111,25 @@ void ShaderManagerClass::Shutdown()
 		m_LightShader = 0;
 	}
 
-	// Release the texture shader object.
 	if(m_TextureShader)
 	{
 		m_TextureShader->Shutdown();
 		delete m_TextureShader;
 		m_TextureShader = 0;
+	}
+
+	if (m_deferredShading)
+	{
+		m_deferredShading->Shutdown();
+		delete m_deferredShading;
+		m_deferredShading= 0;
+	}
+
+	if (m_dsLight)
+	{
+		m_dsLight->Shutdown();
+		delete m_dsLight;
+		m_dsLight = 0;
 	}
 
 	return;
@@ -149,8 +179,37 @@ bool ShaderManagerClass::RenderBumpMapShader(ID3D11DeviceContext* deviceContext,
 	bool result;
 
 
-	// Render the model using the bump map shader.
 	result = m_BumpMapShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, colorTexture, normalTexture, lightDirection, diffuse);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManagerClass::RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
+											  CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+{
+	bool result;
+
+
+	result = m_deferredShading->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+bool ShaderManagerClass::RenderDSLightShader(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
+											 CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture,
+											 CXMVECTOR lightDirection)
+{
+	bool result;
+
+
+	result = m_dsLight->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, colorTexture, normalTexture, lightDirection);
 	if(!result)
 	{
 		return false;

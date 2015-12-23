@@ -13,17 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="FX">
+    <Filter Include="引擎dll接口">
+      <UniqueIdentifier>{5c2b3a2e-bf4a-46b3-a5fd-b601308c8923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="多个材质管理测试shader">
+      <UniqueIdentifier>{6e6ae1eb-4fe6-4f3f-9dc6-249fa7d16c48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="多个材质管理测试shader\FX">
       <UniqueIdentifier>{4ac16761-e574-4878-aacd-6d68638a70bc}</UniqueIdentifier>
     </Filter>
     <Filter Include="延迟渲染Test">
       <UniqueIdentifier>{15bf7cd6-f2ee-49f6-be06-a0e52ead18b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="多个材质管理Test">
-      <UniqueIdentifier>{6e6ae1eb-4fe6-4f3f-9dc6-249fa7d16c48}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="引擎dll接口">
-      <UniqueIdentifier>{5c2b3a2e-bf4a-46b3-a5fd-b601308c8923}</UniqueIdentifier>
+    <Filter Include="延迟渲染Test\fx">
+      <UniqueIdentifier>{a0c4e845-d111-43c4-8d85-d463a0c4233d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,25 +61,37 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BumpmapsModelClass.h">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClInclude>
     <ClInclude Include="BumpmapsShaderClass.h">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClInclude>
     <ClInclude Include="LightShaderClass.h">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClInclude>
     <ClInclude Include="TextureShaderClass.h">
-      <Filter>多个材质管理Test</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderManagerClass.h">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClInclude>
     <ClInclude Include="MyTestInterfaces.h">
       <Filter>引擎dll接口</Filter>
     </ClInclude>
     <ClInclude Include="LightClass.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderManagerClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredBuffersClass.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredShaderClass.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredShadingLightShaderClass.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShading\OrthoWindowClass.h">
+      <Filter>延迟渲染Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -108,19 +123,16 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="BumpmapsModelClass.cpp">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClCompile>
     <ClCompile Include="BumpmapsShaderClass.cpp">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClCompile>
     <ClCompile Include="TextureShaderClass.cpp">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClCompile>
     <ClCompile Include="LightShaderClass.cpp">
-      <Filter>多个材质管理Test</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderManagerClass.cpp">
-      <Filter>多个材质管理Test</Filter>
+      <Filter>多个材质管理测试shader</Filter>
     </ClCompile>
     <ClCompile Include="MyTestInterfaces.cpp">
       <Filter>引擎dll接口</Filter>
@@ -128,16 +140,37 @@
     <ClCompile Include="LightClass.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderManagerClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredBuffersClass.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredShaderClass.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredShadingLightShaderClass.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShading\OrthoWindowClass.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\KMyEngineData\fx\bumpmap.fx">
-      <Filter>FX</Filter>
+      <Filter>多个材质管理测试shader\FX</Filter>
     </None>
     <None Include="..\KMyEngineData\fx\light.fx">
-      <Filter>FX</Filter>
+      <Filter>多个材质管理测试shader\FX</Filter>
     </None>
     <None Include="..\KMyEngineData\fx\texture.fx">
-      <Filter>FX</Filter>
+      <Filter>多个材质管理测试shader\FX</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShadingGenerateGBuffer.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShadingLighting.fx">
+      <Filter>延迟渲染Test\fx</Filter>
     </None>
   </ItemGroup>
 </Project>

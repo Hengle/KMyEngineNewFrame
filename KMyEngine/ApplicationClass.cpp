@@ -50,7 +50,7 @@ bool CApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd,
 	{
 		return false;
 	}
-	result = m_D3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, FULL_SCREEN, SCREEN_DEPTH, SCREEN_NEAR);
+	result = m_D3D->Initialize(screenWidth, screenHeight, VSYNC_ENABLED, hwnd, FULL_SCREEN);
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize Direct3D.", L"Error", MB_OK);
@@ -138,12 +138,18 @@ bool CApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd,
 		return false;
 	}
 
+	m_dsBufferClass.Initialize(m_D3D->GetDevice(),m_D3D->GetClientWidth(),m_D3D->GetClientHeight());
+	m_orthoWindowClass.Initialize(m_D3D->GetDevice(),m_D3D->GetClientWidth(),m_D3D->GetClientHeight());
+
+	isNotFirst = false;
+
 	return true;
 }
 
 bool CApplicationClass::OnResize(int width, int height)
 {
 	m_D3D->OnResize(width,height);
+	m_dsBufferClass.OnResize(m_D3D->GetDevice(),width,height);
 	m_Camera->SetLens(0.25f*CMathHelper::Pi, m_D3D->GetAspectRatio(), 1.0f, 1000.0f);
 
 	return true;
@@ -191,12 +197,16 @@ void CApplicationClass::Shutdown()
 		m_ShaderManager = 0;
 	}
 
+	m_dsBufferClass.Shutdown();
+	m_orthoWindowClass.Shutdown();
+
 	if(m_D3D)
 	{
 		m_D3D->Shutdown();
 		delete m_D3D;
 		m_D3D = 0;
 	}
+
 
 	return;
 }
@@ -214,11 +224,19 @@ bool CApplicationClass::Frame()
 
 bool CApplicationClass::Render()
 {
+	//RenderMultiShaderTest();
+
+	RenderDeferredShadingTest();
+
+	return true;
+}
+
+bool CApplicationClass::RenderMultiShaderTest()
+{
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, translateMatrix;
 	bool result;
 
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
 
 	worldMatrix = XMMatrixIdentity();
 	viewMatrix = m_Camera->View();
@@ -234,6 +252,7 @@ bool CApplicationClass::Render()
 	{
 		return false;
 	}
+
 	worldMatrix = XMMatrixIdentity();
 	translateMatrix = XMMatrixTranslation( 0.0f, 0.0f, 0.0f);
 	worldMatrix = XMMatrixMultiply(worldMatrix,translateMatrix);
@@ -309,4 +328,61 @@ void CApplicationClass::KeyInput(char keycode)
 
 	Frame();
 
+}
+
+bool CApplicationClass::RenderDeferredShadingTest()
+{
+
+	bool result;
+	XMMATRIX worldMatrix, baseViewMatrix, orthoMatrix;
+
+
+	result = RenderSceneToTexture();
+	if(!result)
+	{
+		return false;
+	}
+
+	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+
+	worldMatrix = XMMatrixIdentity();
+
+
+	m_D3D->TurnZBufferOff();
+
+	m_orthoWindowClass.Render(m_D3D->GetDeviceContext());
+
+	XMVECTOR tD = XMLoadFloat3(&m_Light->GetDirection());
+	m_ShaderManager->RenderDSLightShader(m_D3D->GetDeviceContext(), m_orthoWindowClass.GetIndexCount(), worldMatrix, worldMatrix, worldMatrix, 
+		m_dsBufferClass.GetShaderResourceView(0), m_dsBufferClass.GetShaderResourceView(1),tD);
+
+	m_D3D->TurnZBufferOn();
+
+	m_D3D->EndScene();
+
+	return true;
+
+}
+
+bool CApplicationClass::RenderSceneToTexture()
+{
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+
+	m_dsBufferClass.SetRenderTargets(m_D3D->GetDeviceContext());
+	m_dsBufferClass.ClearRenderTargets(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
+
+	worldMatrix = XMMatrixIdentity();
+	viewMatrix = m_Camera->View();
+	projectionMatrix = m_Camera->Proj();
+
+
+	m_Model2->Render(m_D3D->GetDeviceContext());
+
+	m_ShaderManager->RenderDeferredShader(m_D3D->GetDeviceContext(), m_Model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model2->GetTexture());
+
+	m_D3D->SetBackBufferRenderTarget();
+
+	m_D3D->ResetViewport();
+
+	return true;
 }

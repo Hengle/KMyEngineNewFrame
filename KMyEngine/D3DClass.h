@@ -24,18 +24,26 @@ public:
 	D3DClass(const D3DClass&);
 	~D3DClass();
 
-	bool Initialize(int, int, bool, HWND, bool, float, float);
+	bool Initialize(int, int, bool, HWND, bool);
 	bool OnResize(int width,int height);
 	void Shutdown();
 
 	void BeginScene(float, float, float, float);
 	void EndScene();
 
+	void TurnZBufferOn();
+	void TurnZBufferOff();
+
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
 
+	void SetBackBufferRenderTarget();
+    void ResetViewport();
+
 	float GetAspectRatio();
 
+	int GetClientWidth();
+	int GetClientHeight();
 
 private:
 	bool m_vsync_enabled;
@@ -51,6 +59,9 @@ private:
 	ID3D11RenderTargetView* m_renderTargetView;
 	ID3D11DepthStencilView* m_depthStencilView;
 	D3D11_VIEWPORT			mScreenViewport;
+
+	ID3D11DepthStencilState* m_depthStencilState;
+	ID3D11DepthStencilState* m_depthDisabledStencilState;
 
 	D3D_DRIVER_TYPE md3dDriverType;
 	UINT m4xMsaaQuality;

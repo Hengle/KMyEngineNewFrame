@@ -86,6 +86,10 @@
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="D3DClass.h" />
+    <ClInclude Include="DeferredShading\DeferredBuffersClass.h" />
+    <ClInclude Include="DeferredShading\DeferredShaderClass.h" />
+    <ClInclude Include="DeferredShading\DeferredShadingLightShaderClass.h" />
+    <ClInclude Include="DeferredShading\OrthoWindowClass.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="InputClass.h" />
     <ClInclude Include="LightClass.h" />
@@ -104,6 +108,10 @@
     <ClCompile Include="BumpmapsShaderClass.cpp" />
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="D3DClass.cpp" />
+    <ClCompile Include="DeferredShading\DeferredBuffersClass.cpp" />
+    <ClCompile Include="DeferredShading\DeferredShaderClass.cpp" />
+    <ClCompile Include="DeferredShading\DeferredShadingLightShaderClass.cpp" />
+    <ClCompile Include="DeferredShading\OrthoWindowClass.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="InputClass.cpp" />
@@ -124,6 +132,14 @@
       <FileType>Document</FileType>
     </None>
     <None Include="..\KMyEngineData\fx\texture.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\KMyEngineData\fx\DeferredShadingGenerateGBuffer.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShadingLighting.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>
