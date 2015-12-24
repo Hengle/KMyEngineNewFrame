@@ -1,3 +1,5 @@
+#pragma once
+
 #include <d3dx11.h>
 #include <xnamath.h>
 #include <dxerr.h>
@@ -54,3 +56,10 @@ using namespace std;
 //---------------------------------------------------------------------------------------
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 #define SafeDelete(x) {delete x,x=0;}
+
+struct ShaderMatrix 
+{
+	XMFLOAT4X4 gWorld;
+	XMFLOAT4X4 gView;
+	XMFLOAT4X4 gProj;
+};

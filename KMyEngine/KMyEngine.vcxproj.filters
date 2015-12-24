@@ -93,6 +93,15 @@
     <ClInclude Include="DeferredShading\OrthoWindowClass.h">
       <Filter>延迟渲染Test</Filter>
     </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredShadingEdgeDetectAAClass.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredShadingBloom.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredShadingMergeOutput.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationClass.cpp">
@@ -155,6 +164,15 @@
     <ClCompile Include="DeferredShading\OrthoWindowClass.cpp">
       <Filter>延迟渲染Test</Filter>
     </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredShadingEdgeDetectAAClass.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredShadingBloom.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredShadingMergeOutput.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\KMyEngineData\fx\bumpmap.fx">
@@ -166,10 +184,22 @@
     <None Include="..\KMyEngineData\fx\texture.fx">
       <Filter>多个材质管理测试shader\FX</Filter>
     </None>
-    <None Include="..\KMyEngineData\fx\DeferredShadingGenerateGBuffer.fx">
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingBloom.fx">
       <Filter>延迟渲染Test\fx</Filter>
     </None>
-    <None Include="..\KMyEngineData\fx\DeferredShadingLighting.fx">
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingEdgeDetectAA.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingGenerateGBuffer.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingLighting.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingMergeOutput.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingScreenQuad.fx">
       <Filter>延迟渲染Test\fx</Filter>
     </None>
   </ItemGroup>

@@ -16,8 +16,8 @@ private:
 	struct VertexType
 	{
 		XMFLOAT3 position;
-		XMFLOAT2 texture;
 		XMFLOAT3 normal;
+		XMFLOAT2 texture;		
 	};
 
 	struct ModelType
@@ -39,7 +39,6 @@ public:
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();
 
-
 private:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
@@ -52,10 +51,13 @@ private:
 	void ReleaseModel();
 
 private:
-	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	int m_vertexCount, m_indexCount;
-	TextureClass* m_Texture;
-	ModelType* m_model;
+	ID3D11Buffer*	m_vertexBuffer;
+	ID3D11Buffer*	m_indexBuffer;
+	TextureClass*	m_Texture;
+	ModelType*		m_model;
+
+	int m_vertexCount;
+	int m_indexCount;
 };
 
 #endif

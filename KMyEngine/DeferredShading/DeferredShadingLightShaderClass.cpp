@@ -8,10 +8,12 @@ CDeferredShadingLightShaderClass::CDeferredShadingLightShaderClass()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
+
 	m_layout = 0;
-	m_sampleState = 0;
-	m_matrixBuffer = 0;
-	m_lightBuffer = 0;
+	m_sampleStatePoint = 0;
+
+	m_cbPerFramePS = 0;
+	m_cbPerObjectVS = 0;
 }
 
 
@@ -29,7 +31,7 @@ bool CDeferredShadingLightShaderClass::Initialize(ID3D11Device* device, HWND hwn
 {
 	bool result;
 
-	result = InitializeShader(device, hwnd, L"../KMyEngineData/fx/DeferredShadingLighting.fx", L"../KMyEngineData/fx/DeferredShadingLighting.fx");
+	result = InitializeShader(device, hwnd, L"../KMyEngineData/fx/DeferredShading/DeferredShadingScreenQuad.fx", L"../KMyEngineData/fx/DeferredShading/DeferredShadingLighting.fx");
 	if(!result)
 	{
 		return false;
@@ -47,20 +49,26 @@ void CDeferredShadingLightShaderClass::Shutdown()
 }
 
 
-bool CDeferredShadingLightShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-							  CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture,
-							  CXMVECTOR lightDirection)
+bool CDeferredShadingLightShaderClass::Render(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* pdb, LightClass* light)
 {
 	bool result;
 
+	pdb->SetLightingRenderTarget(deviceContext);
 
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, colorTexture, normalTexture, lightDirection);
+	result = SetShaderParametersVS(deviceContext,shaderMatrix);
 	if(!result)
 	{
 		return false;
 	}
 
-	RenderShader(deviceContext, indexCount);
+	result = SetShaderParametersPS(deviceContext, shaderMatrix,pdb,light);
+	if(!result)
+	{
+		return false;
+	}
+
+
+	RenderShader(deviceContext, indexCount,pdb);
 
 	return true;
 }
@@ -72,19 +80,18 @@ bool CDeferredShadingLightShaderClass::InitializeShader(ID3D11Device* device, HW
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 	unsigned int numElements;
-    D3D11_SAMPLER_DESC samplerDesc;
+	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_BUFFER_DESC lightBufferDesc;
-
 
 	errorMessage = 0;
 	vertexShaderBuffer = 0;
 	pixelShaderBuffer = 0;
 
-	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "LightVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
-								   &vertexShaderBuffer, &errorMessage, NULL);
+	result = D3DX11CompileFromFile(vsFilename, NULL, NULL, "DeferredScreenQuadVertexShader", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
+		&vertexShaderBuffer, &errorMessage, NULL);
+
 	if(FAILED(result))
 	{
 		if(errorMessage)
@@ -99,7 +106,8 @@ bool CDeferredShadingLightShaderClass::InitializeShader(ID3D11Device* device, HW
 		return false;
 	}
 
-	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "LightPixelShader", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
+
+	result = D3DX11CompileFromFile(psFilename, NULL, NULL, "psLightStage", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, NULL, 
 								   &pixelShaderBuffer, &errorMessage, NULL);
 	if(FAILED(result))
 	{
@@ -115,13 +123,14 @@ bool CDeferredShadingLightShaderClass::InitializeShader(ID3D11Device* device, HW
 		return false;
 	}
 
-    result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+	// Create the vertex shader from the buffer.
+	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
 	if(FAILED(result))
 	{
 		return false;
 	}
 
-    result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
+	result = device->CreatePixelShader(pixelShaderBuffer->GetBufferPointer(), pixelShaderBuffer->GetBufferSize(), NULL, &m_pixelShader);
 	if(FAILED(result))
 	{
 		return false;
@@ -135,69 +144,69 @@ bool CDeferredShadingLightShaderClass::InitializeShader(ID3D11Device* device, HW
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
+
 	polygonLayout[1].SemanticName = "TEXCOORD";
 	polygonLayout[1].SemanticIndex = 0;
 	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
-	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[1].AlignedByteOffset =12 /*D3D11_APPEND_ALIGNED_ELEMENT*/;
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[1].InstanceDataStepRate = 0;
 
-    numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
+	HR(device->CreateInputLayout(polygonLayout, 2, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), &m_layout));
 
-	HR(device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), 
-		                               &m_layout));
 	vertexShaderBuffer->Release();
 	vertexShaderBuffer = 0;
 
 	pixelShaderBuffer->Release();
 	pixelShaderBuffer = 0;
 
-    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-    samplerDesc.MipLODBias = 0.0f;
-    samplerDesc.MaxAnisotropy = 1;
-    samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-    samplerDesc.BorderColor[0] = 0;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
 	samplerDesc.BorderColor[1] = 0;
 	samplerDesc.BorderColor[2] = 0;
 	samplerDesc.BorderColor[3] = 0;
-    samplerDesc.MinLOD = 0;
-    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    HR(device->CreateSamplerState(&samplerDesc, &m_sampleState));
+	HR(device->CreateSamplerState(&samplerDesc, &m_sampleStatePoint));
 
-    matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	matrixBufferDesc.ByteWidth = sizeof(MatrixBufferType);
-    matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(SCB_PERFRAME_PS);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
-	HR(device->CreateBuffer(&matrixBufferDesc, NULL, &m_matrixBuffer));
+	HR(device->CreateBuffer(&matrixBufferDesc, NULL, &m_cbPerFramePS));
 
-	lightBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	lightBufferDesc.ByteWidth = sizeof(LightBufferType);
-	lightBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	lightBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	lightBufferDesc.MiscFlags = 0;
-	lightBufferDesc.StructureByteStride = 0;
+	matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	matrixBufferDesc.ByteWidth = sizeof(SCB_PEROBJECT_VS);
+	matrixBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	matrixBufferDesc.MiscFlags = 0;
+	matrixBufferDesc.StructureByteStride = 0;
 
-	HR(device->CreateBuffer(&lightBufferDesc, NULL, &m_lightBuffer));
+	HR(device->CreateBuffer(&matrixBufferDesc, NULL, &m_cbPerObjectVS));
+
 	return true;
 }
 
 
 void CDeferredShadingLightShaderClass::ShutdownShader()
 {
-	ReleaseCOM(m_lightBuffer);
-	ReleaseCOM(m_matrixBuffer);
-	ReleaseCOM(m_sampleState);
-	ReleaseCOM(m_layout);
-	ReleaseCOM(m_pixelShader);
 	ReleaseCOM(m_vertexShader);
+	ReleaseCOM(m_pixelShader);
+	ReleaseCOM(m_layout);
+	ReleaseCOM(m_sampleStatePoint);
+	ReleaseCOM(m_cbPerFramePS);
+	ReleaseCOM(m_cbPerObjectVS);
 
 	return;
 }
@@ -231,61 +240,79 @@ void CDeferredShadingLightShaderClass::OutputShaderErrorMessage(ID3D10Blob* erro
 	return;
 }
 
-
-bool CDeferredShadingLightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-										   CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* colorTexture, 
-										   ID3D11ShaderResourceView* normalTexture, CXMVECTOR lightDirection)
+bool CDeferredShadingLightShaderClass::SetShaderParametersVS(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrix)
 {
 	HRESULT result;
-    D3D11_MAPPED_SUBRESOURCE mappedResource;
-	unsigned int bufferNumber;
-	MatrixBufferType* dataPtr;
-	LightBufferType* dataPtr2;
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	SCB_PEROBJECT_VS* dataPtr;
 
-	XMMATRIX wvp = worldMatrix*viewMatrix*projectionMatrix;
+	XMMATRIX worldMatrix = XMLoadFloat4x4(&shaderMatrix.gWorld);
+	XMMATRIX viewMatrix = XMLoadFloat4x4(&shaderMatrix.gView);
+	XMMATRIX projMatrix = XMLoadFloat4x4(&shaderMatrix.gProj);
 
+	XMMATRIX wvp = worldMatrix * viewMatrix * projMatrix;
 
-	HR(deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->wvp = XMMatrixTranspose(wvp);
-    deviceContext->Unmap(m_matrixBuffer, 0);
+	HR(deviceContext->Map(m_cbPerObjectVS, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
+	dataPtr = (SCB_PEROBJECT_VS*)mappedResource.pData;
+	dataPtr->gWorldViewProj = XMMatrixTranspose(wvp);
+	deviceContext->Unmap(m_cbPerObjectVS, 0);
 
-	bufferNumber = 0;
+	deviceContext->IASetInputLayout(m_layout);
+	deviceContext->VSSetConstantBuffers(0, 1, &m_cbPerObjectVS);
 
-    deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
 
-	deviceContext->PSSetShaderResources(0, 1, &colorTexture);
-	deviceContext->PSSetShaderResources(1, 1, &normalTexture);
-
-
-	HR(deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
-	dataPtr2 = (LightBufferType*)mappedResource.pData;
-	XMStoreFloat3(&dataPtr2->lightDirection,lightDirection);
-	dataPtr2->padding = 0.0f;
-	deviceContext->Unmap(m_lightBuffer, 0);
-
-	bufferNumber = 0;
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
 
 	return true;
 }
 
 
-void CDeferredShadingLightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+bool CDeferredShadingLightShaderClass::SetShaderParametersPS(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrix, DeferredBuffersClass* pdb, LightClass* light)
 {
-	deviceContext->IASetInputLayout(m_layout);
+	HRESULT result;
+    D3D11_MAPPED_SUBRESOURCE mappedResource;
+	SCB_PERFRAME_PS* dataPtr;
 
-    deviceContext->VSSetShader(m_vertexShader, NULL, 0);
-    deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+	XMFLOAT3 lightDirection = light->GetDirection();
+	XMFLOAT3 gDiffuseLight = XMFLOAT3(light->GetDiffuseColor().x,light->GetDiffuseColor().y,light->GetDiffuseColor().z);
+	XMFLOAT3 gSpecularLight = XMFLOAT3(light->GetSpecularColor().x,light->GetSpecularColor().y,light->GetSpecularColor().z);
 
-	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
+
+	ID3D11ShaderResourceView* colorTexture = pdb->GetShaderResourceView(0);
+	ID3D11ShaderResourceView* normalTexture = pdb->GetShaderResourceView(1);
+	ID3D11ShaderResourceView* specularTexture = pdb->GetShaderResourceView(2);
+	ID3D11ShaderResourceView* depthTexture = pdb->GetShaderResourceView(3);
+
+
+	HR(deviceContext->Map(m_cbPerFramePS, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
+	dataPtr = (SCB_PERFRAME_PS*)mappedResource.pData;
+
+	dataPtr->gLightDirV = lightDirection;
+	dataPtr->gDiffuseLight = gDiffuseLight;
+	dataPtr->gSpecularLight = gSpecularLight;
+	dataPtr->gProjMatrix = XMMatrixTranspose(XMLoadFloat4x4(&shaderMatrix.gProj));
+
+	deviceContext->Unmap(m_cbPerFramePS, 0);
+	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFramePS);
+
+	deviceContext->PSSetShaderResources(0, 1, &colorTexture);
+	deviceContext->PSSetShaderResources(1, 1, &normalTexture);
+	deviceContext->PSSetShaderResources(2, 1, &specularTexture);
+	deviceContext->PSSetShaderResources(3, 1, &depthTexture);
+
+	deviceContext->PSSetSamplers(0, 1, &m_sampleStatePoint);	
+
+	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
+
+	return true;
+}
+
+
+void CDeferredShadingLightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* pdb)
+{
+	
 
 	deviceContext->DrawIndexed(indexCount, 0, 0);
-
-	ID3D11ShaderResourceView* pt = NULL;
-	deviceContext->PSSetShaderResources(0, 1, &pt);
-	deviceContext->PSSetShaderResources(1, 1, &pt);
-
 
 	return;
 }

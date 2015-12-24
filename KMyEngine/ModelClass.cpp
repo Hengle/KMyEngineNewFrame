@@ -298,3 +298,102 @@ void ModelClass::ReleaseModel()
 
 	return;
 }
+
+
+
+//int fun()
+//{
+//	//两个fx文件
+//	ScreenQuad.fx
+//	{
+//		struct VertexInput{};
+//		struct VertexOutput{};
+//		vs
+//	}
+//
+//	RenderLight.fx
+//	{
+//        #include"ScreenQuad.fx"
+//
+//		Texture2D gDiffuse : register(t0);
+//		Texture2D gNormal  : register(t1);
+//
+//		SamplerState SampleTypePoint : register(s0);
+//
+//		struct RenderLightPSOutput
+//		{
+//			float4 testoutput :  SV_Target0;
+//		};
+//
+//		ps(VertexOutput pin)
+//		{
+//			gDiffuse.Sample(SampleTypePoint,pin.TexV);
+//			gNormal.Sample(SampleTypePoint,pin.TexV);
+//		}
+//	}
+//	EdgeDetectAA.fx
+//	{
+//		#include"ScreenQuad.fx"
+//
+//		Texture2D gDiffuse : register(t0);
+//		Texture2D gNormal  : register(t1);
+//		SamplerState SampleTypePoint : register(s0);
+//
+//		EdgeDetectAAPSOutput
+//		{
+//			float4 eaOut : SV_Target0;
+//		}
+//
+//		ps(VertexOutput pin)
+//		{
+//			gDiffuse.Sample(SampleTypePoint,pin.TexV);
+//			gNormal.Sample(SampleTypePoint,pin.TexV);
+//		}
+//	}
+//
+//
+//	RenderLight.fx
+//	{
+//         #include"ScreenQuad.fx"
+//
+//		Texture2D gDiffuse : register(t0);
+//		Texture2D gNormal  : register(t1);
+//
+//		SamplerState SampleTypePoint : register(s0);
+//
+//		struct RenderLightPSOutput
+//		{
+//			float4 testoutput :  SV_Target0;
+//		};
+//
+//		ps(VertexOutput pin)
+//		{
+//			gDiffuse.Sample(SampleTypePoint,pin.TexV);
+//			gNormal.Sample(SampleTypePoint,pin.TexV);
+//		}
+//	}
+//
+//	EdgeDetectAA.fx
+//	{
+//        #include"RenderLight.fx"
+//
+//		//Texture2D gDiffuse : register(t0);
+//		//Texture2D gNormal  : register(t1);
+//		//SamplerState SampleTypePoint : register(s0);
+//
+//		EdgeDetectAAPSOutput
+//		{
+//			float4 eaOut : SV_Target1;
+//		}
+//
+//		ps(VertexOutput pin)
+//		{
+//			gDiffuse.Sample(SampleTypePoint,pin.TexV);
+//			gNormal.Sample(SampleTypePoint,pin.TexV);
+//		}
+//	}
+//
+//
+//
+//
+//}

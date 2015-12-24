@@ -59,12 +59,13 @@ bool DeferredBuffersClass::Initialize(ID3D11Device* device, int textureWidth, in
 
 	for(i=0; i<BUFFER_COUNT; i++)
 	{
-		result = device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTextureArray[i]);
-		if(FAILED(result))
-		{
-			return false;
-		}
+		HR(device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTextureArray[i]));
 	}
+	HR(device->CreateTexture2D(&textureDesc, NULL, &m_FinalColorTexture));
+	HR(device->CreateTexture2D(&textureDesc, NULL, &m_FinalColorTextureAA));
+	HR(device->CreateTexture2D(&textureDesc, NULL, &m_BloomTextureArray[0]));
+	HR(device->CreateTexture2D(&textureDesc, NULL, &m_BloomTextureArray[1]));
+
 
 	renderTargetViewDesc.Format = textureDesc.Format;
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -72,12 +73,13 @@ bool DeferredBuffersClass::Initialize(ID3D11Device* device, int textureWidth, in
 
 	for(i=0; i<BUFFER_COUNT; i++)
 	{
-		result = device->CreateRenderTargetView(m_renderTargetTextureArray[i], &renderTargetViewDesc, &m_renderTargetViewArray[i]);
-		if(FAILED(result))
-		{
-			return false;
-		}
+		HR(device->CreateRenderTargetView(m_renderTargetTextureArray[i], &renderTargetViewDesc, &m_renderTargetViewArray[i]));
 	}
+	HR(device->CreateRenderTargetView(m_FinalColorTexture, &renderTargetViewDesc, &m_FinalColorRTV));
+	HR(device->CreateRenderTargetView(m_FinalColorTextureAA, &renderTargetViewDesc, &m_FinalColorAARTV));
+	HR(device->CreateRenderTargetView(m_BloomTextureArray[0], &renderTargetViewDesc, &m_BloomRTVArray[0]));
+	HR(device->CreateRenderTargetView(m_BloomTextureArray[1], &renderTargetViewDesc, &m_BloomRTVArray[1]));
+
 
 	shaderResourceViewDesc.Format = textureDesc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -86,12 +88,12 @@ bool DeferredBuffersClass::Initialize(ID3D11Device* device, int textureWidth, in
 
 	for(i=0; i<BUFFER_COUNT; i++)
 	{
-		result = device->CreateShaderResourceView(m_renderTargetTextureArray[i], &shaderResourceViewDesc, &m_shaderResourceViewArray[i]);
-		if(FAILED(result))
-		{
-			return false;
-		}
+		HR(device->CreateShaderResourceView(m_renderTargetTextureArray[i], &shaderResourceViewDesc, &m_shaderResourceViewArray[i]));
 	}
+	HR(device->CreateShaderResourceView(m_FinalColorTexture, &shaderResourceViewDesc, &m_FinalColorSRV));
+	HR(device->CreateShaderResourceView(m_FinalColorTextureAA, &shaderResourceViewDesc, &m_FinalColorAASRV));
+	HR(device->CreateShaderResourceView(m_BloomTextureArray[0], &shaderResourceViewDesc, &m_BloomSRVArray[0]));
+	HR(device->CreateShaderResourceView(m_BloomTextureArray[1], &shaderResourceViewDesc, &m_BloomSRVArray[1]));
 
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
@@ -138,40 +140,29 @@ bool DeferredBuffersClass::Initialize(ID3D11Device* device, int textureWidth, in
 
 void DeferredBuffersClass::Shutdown()
 {
-	int i;
+	ReleaseCOM(m_depthStencilView);
+	ReleaseCOM(m_depthStencilBuffer);
 
-
-	if(m_depthStencilView)
+	for(int i=0; i<BUFFER_COUNT; i++)
 	{
-		m_depthStencilView->Release();
-		m_depthStencilView = 0;
+		ReleaseCOM(m_shaderResourceViewArray[i]);
+		ReleaseCOM(m_renderTargetViewArray[i]);
+		ReleaseCOM(m_renderTargetTextureArray[i]);
 	}
 
-	if(m_depthStencilBuffer)
+	ReleaseCOM(m_FinalColorTexture);
+	ReleaseCOM(m_FinalColorRTV);
+	ReleaseCOM(m_FinalColorSRV);
+
+	ReleaseCOM(m_FinalColorTextureAA);
+	ReleaseCOM(m_FinalColorAARTV);
+	ReleaseCOM(m_FinalColorAASRV);
+
+	for(int i=0; i<2; i++)
 	{
-		m_depthStencilBuffer->Release();
-		m_depthStencilBuffer = 0;
-	}
-
-	for(i=0; i<BUFFER_COUNT; i++)
-	{
-		if(m_shaderResourceViewArray[i])
-		{
-			m_shaderResourceViewArray[i]->Release();
-			m_shaderResourceViewArray[i] = 0;
-		}
-
-		if(m_renderTargetViewArray[i])
-		{
-			m_renderTargetViewArray[i]->Release();
-			m_renderTargetViewArray[i] = 0;
-		}
-
-		if(m_renderTargetTextureArray[i])
-		{
-			m_renderTargetTextureArray[i]->Release();
-			m_renderTargetTextureArray[i] = 0;
-		}
+		ReleaseCOM(m_BloomRTVArray[i]);
+		ReleaseCOM(m_BloomSRVArray[i]);
+		ReleaseCOM(m_BloomTextureArray[i]);
 	}
 
 	return;
@@ -187,8 +178,6 @@ void DeferredBuffersClass::SetRenderTargets(ID3D11DeviceContext* deviceContext)
 	
 	return;
 }
-
-
 void DeferredBuffersClass::ClearRenderTargets(ID3D11DeviceContext* deviceContext, float red, float green, float blue, float alpha)
 {
 	float color[4];
@@ -208,8 +197,6 @@ void DeferredBuffersClass::ClearRenderTargets(ID3D11DeviceContext* deviceContext
 
 	return;
 }
-
-
 ID3D11ShaderResourceView* DeferredBuffersClass::GetShaderResourceView(int view)
 {
 	return m_shaderResourceViewArray[view];
@@ -303,4 +290,113 @@ bool DeferredBuffersClass::OnResize(ID3D11Device* pd,int width,int height)
 	m_viewport.TopLeftY = 0.0f;
 
 	return true;
+}
+
+int DeferredBuffersClass::GetTextureWidth()
+{
+	return m_textureWidth;
+}
+
+int DeferredBuffersClass::GetTextureHeight()
+{
+	return m_textureHeight;
+}
+
+void DeferredBuffersClass::SetLightingRenderTarget(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->OMSetRenderTargets(1, &m_FinalColorRTV, m_depthStencilView);
+
+	deviceContext->RSSetViewports(1, &m_viewport);
+
+	return;
+}
+void DeferredBuffersClass::ClearLightingRenderTargets(ID3D11DeviceContext* deviceContext, float red, float green, float blue, float alpha)
+{
+	float color[4];
+	int i;
+
+	color[0] = red;
+	color[1] = green;
+	color[2] = blue;
+	color[3] = alpha;
+
+	/*for(i=0; i<BUFFER_COUNT; i++)
+	{
+	deviceContext->ClearRenderTargetView(m_renderTargetViewArray[i], color);
+	}*/
+
+	deviceContext->ClearRenderTargetView(m_FinalColorRTV, color);
+	deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	return;
+}
+ID3D11ShaderResourceView* DeferredBuffersClass::GetLightingSRV()
+{
+	return m_FinalColorSRV;
+}
+
+void DeferredBuffersClass::SetEdgeDetectAARenderTarget(ID3D11DeviceContext* deviceContext)
+{
+	deviceContext->OMSetRenderTargets(1, &m_FinalColorAARTV, m_depthStencilView);
+
+	deviceContext->RSSetViewports(1, &m_viewport);
+
+	return;
+}
+void DeferredBuffersClass::ClearEdgeDetectAARenderTargets(ID3D11DeviceContext* deviceContext, float red, float green, float blue, float alpha)
+{
+	float color[4];
+	int i;
+
+	color[0] = red;
+	color[1] = green;
+	color[2] = blue;
+	color[3] = alpha;
+
+	/*for(i=0; i<BUFFER_COUNT; i++)
+	{
+	deviceContext->ClearRenderTargetView(m_renderTargetViewArray[i], color);
+	}*/
+
+	deviceContext->ClearRenderTargetView(m_FinalColorAARTV, color);
+	deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	return;
+}
+ID3D11ShaderResourceView* DeferredBuffersClass::GetEdgeDetectAASRV()
+{
+	return m_FinalColorAASRV;
+}
+
+void DeferredBuffersClass::SetBloomRenderTargets(ID3D11DeviceContext* deviceContext)
+{
+	// Bind the render target view array and depth stencil buffer to the output render pipeline.
+	deviceContext->OMSetRenderTargets(2, m_BloomRTVArray, m_depthStencilView);
+
+	deviceContext->RSSetViewports(1, &m_viewport);
+
+	return;
+}
+void DeferredBuffersClass::ClearBloomRenderTargets(ID3D11DeviceContext* deviceContext, float red, float green, float blue, float alpha)
+{
+	float color[4];
+	int i;
+
+	color[0] = red;
+	color[1] = green;
+	color[2] = blue;
+	color[3] = alpha;
+
+	for(i=0; i<2; i++)
+	{
+		deviceContext->ClearRenderTargetView(m_BloomRTVArray[i], color);
+	}
+
+	deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	return;
+}
+ID3D11ShaderResourceView* DeferredBuffersClass::GetBloomShaderResourceView(int view)
+{
+	return m_BloomSRVArray[view];
 }

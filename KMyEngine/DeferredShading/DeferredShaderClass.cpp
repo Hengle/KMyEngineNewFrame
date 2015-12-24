@@ -28,7 +28,7 @@ bool DeferredShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
-	result = InitializeShader(device, hwnd, L"../KMyEngineData/fx/DeferredShadingGenerateGBuffer.fx", L"../KMyEngineData/fx/DeferredShadingGenerateGBuffer.fx");
+	result = InitializeShader(device, hwnd, L"../KMyEngineData/fx/DeferredShading/DeferredShadingGenerateGBuffer.fx", L"../KMyEngineData/fx/DeferredShading/DeferredShadingGenerateGBuffer.fx");
 	if(!result)
 	{
 		return false;
@@ -46,18 +46,17 @@ void DeferredShaderClass::Shutdown()
 }
 
 
-bool DeferredShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-								 CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool DeferredShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* db, ID3D11ShaderResourceView* texture)
 {
 	bool result;
 
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, texture);
+	result = SetShaderParameters(deviceContext, shaderMatrixs, texture);
 	if(!result)
 	{
 		return false;
 	}
 
-	RenderShader(deviceContext, indexCount);
+	RenderShader(deviceContext, indexCount,db);
 
 	return true;
 }
@@ -133,25 +132,26 @@ bool DeferredShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHA
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
-	polygonLayout[1].SemanticName = "TEXCOORD";
+	polygonLayout[1].SemanticName = "NORMAL";
 	polygonLayout[1].SemanticIndex = 0;
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
-	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[1].AlignedByteOffset = 12 /*D3D11_APPEND_ALIGNED_ELEMENT*/;
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[1].InstanceDataStepRate = 0;
 
-	polygonLayout[2].SemanticName = "NORMAL";
+	polygonLayout[2].SemanticName = "TEXCOORD";
 	polygonLayout[2].SemanticIndex = 0;
-	polygonLayout[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[2].Format = DXGI_FORMAT_R32G32_FLOAT;
 	polygonLayout[2].InputSlot = 0;
-	polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[2].AlignedByteOffset =24 /*D3D11_APPEND_ALIGNED_ELEMENT*/;
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[2].InstanceDataStepRate = 0;
 
+
     numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
-	result = device->CreateInputLayout(polygonLayout, numElements, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), 
+	result = device->CreateInputLayout(polygonLayout, 3, vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), 
 		                               &m_layout);
 	if(FAILED(result))
 	{
@@ -238,42 +238,42 @@ void DeferredShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWN
 }
 
 
-bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-											  CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrixs, ID3D11ShaderResourceView* texture)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
 
+	XMMATRIX worldMatrix = XMLoadFloat4x4(&shaderMatrixs.gWorld);
+	XMMATRIX viewMatrix = XMLoadFloat4x4(&shaderMatrixs.gView);
+	XMMATRIX projMatrix = XMLoadFloat4x4(&shaderMatrixs.gProj);
+
 	XMMATRIX wvp;
-	wvp =  worldMatrix * viewMatrix * projectionMatrix;	
+	wvp = worldMatrix * viewMatrix  * projMatrix;
 
-	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
-	if(FAILED(result))
-	{
-		return false;
-	}
+	XMMATRIX wv = worldMatrix * viewMatrix;
 
+	HR(deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
-
-	dataPtr->gWorldInvTranspose = XMMatrixTranspose(worldMatrix);
-	dataPtr->wvp = XMMatrixTranspose(wvp);
-
+	dataPtr->gWorldViewProj = XMMatrixTranspose(wvp);
+	dataPtr->gWorldView = XMMatrixTranspose(wv);
     deviceContext->Unmap(m_matrixBuffer, 0);
 
 	bufferNumber = 0;
 
     deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
-
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	return true;
 }
 
 
-void DeferredShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount)
+void DeferredShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* db)
 {
+	db->SetRenderTargets(deviceContext);
+	db->ClearRenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
+
 	deviceContext->IASetInputLayout(m_layout);
 
     deviceContext->VSSetShader(m_vertexShader, NULL, 0);

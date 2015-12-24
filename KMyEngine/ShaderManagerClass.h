@@ -15,6 +15,9 @@
 //////////////////////////////////////////////////////////////////////////
 #include "DeferredShading/DeferredShaderClass.h"
 #include "DeferredShading/DeferredShadingLightShaderClass.h"
+#include "DeferredShading/DeferredShadingEdgeDetectAAClass.h"
+#include "DeferredShading/DeferredShadingBloom.h"
+#include "DeferredShading/DeferredShadingMergeOutput.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ShaderManagerClass
@@ -37,15 +40,23 @@ public:
 	bool RenderBumpMapShader(ID3D11DeviceContext*, int, CXMMATRIX, CXMMATRIX, CXMMATRIX, ID3D11ShaderResourceView*, 
 		ID3D11ShaderResourceView*, XMFLOAT3, XMFLOAT4);
 
-	bool RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-		CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture);
 
-	bool RenderDSLightShader(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-		CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture,
-		CXMVECTOR lightDirection);
+
+	//////////////////////////////////////////////////////////////////////////
+	//—”≥Ÿ‰÷»æ
+	//////////////////////////////////////////////////////////////////////////
+
+	bool RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* db, ID3D11ShaderResourceView* texture);
+	bool RenderDSLightShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
+	bool RenderDSEdgeDetectAAShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
+	bool RenderDSBloomShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
+	bool RenderDSMergeOutputShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
 
 	DeferredShaderClass*				m_deferredShading;
 	CDeferredShadingLightShaderClass*   m_dsLight;
+	DeferredShadingEdgeDetectAAClass*	m_dsEdgeDetectedShader;
+	CDeferredShadingBloomClass*			m_dsBloomShader;
+	CDeferredShadingMergeOutput*		m_dsMergeOutputShader;
 
 private:
 	TextureShaderClass* m_TextureShader;

@@ -88,7 +88,10 @@
     <ClInclude Include="D3DClass.h" />
     <ClInclude Include="DeferredShading\DeferredBuffersClass.h" />
     <ClInclude Include="DeferredShading\DeferredShaderClass.h" />
+    <ClInclude Include="DeferredShading\DeferredShadingBloom.h" />
+    <ClInclude Include="DeferredShading\DeferredShadingEdgeDetectAAClass.h" />
     <ClInclude Include="DeferredShading\DeferredShadingLightShaderClass.h" />
+    <ClInclude Include="DeferredShading\DeferredShadingMergeOutput.h" />
     <ClInclude Include="DeferredShading\OrthoWindowClass.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="InputClass.h" />
@@ -110,7 +113,10 @@
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="DeferredShading\DeferredBuffersClass.cpp" />
     <ClCompile Include="DeferredShading\DeferredShaderClass.cpp" />
+    <ClCompile Include="DeferredShading\DeferredShadingBloom.cpp" />
+    <ClCompile Include="DeferredShading\DeferredShadingEdgeDetectAAClass.cpp" />
     <ClCompile Include="DeferredShading\DeferredShadingLightShaderClass.cpp" />
+    <ClCompile Include="DeferredShading\DeferredShadingMergeOutput.cpp" />
     <ClCompile Include="DeferredShading\OrthoWindowClass.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
@@ -136,10 +142,22 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\KMyEngineData\fx\DeferredShadingGenerateGBuffer.fx">
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingBloom.fx">
       <FileType>Document</FileType>
     </None>
-    <None Include="..\KMyEngineData\fx\DeferredShadingLighting.fx">
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingEdgeDetectAA.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingGenerateGBuffer.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingLighting.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingMergeOutput.fx">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingScreenQuad.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

@@ -91,6 +91,39 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+	m_dsEdgeDetectedShader = new DeferredShadingEdgeDetectAAClass;
+	if (!m_dsEdgeDetectedShader)
+	{
+		return false;
+	}
+	result = m_dsEdgeDetectedShader->Initialize(device,hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
+	m_dsBloomShader = new CDeferredShadingBloomClass;
+	if (!m_dsBloomShader)
+	{
+		return false;
+	}
+	result = m_dsBloomShader->Initialize(device,hwnd);
+	if (!result)
+	{
+		return false;
+	}
+	
+	m_dsMergeOutputShader = new CDeferredShadingMergeOutput;
+	if (!m_dsMergeOutputShader)
+	{
+		return false;
+	}
+	result = m_dsMergeOutputShader->Initialize(device,hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -130,6 +163,26 @@ void ShaderManagerClass::Shutdown()
 		m_dsLight->Shutdown();
 		delete m_dsLight;
 		m_dsLight = 0;
+	}
+
+	if (m_dsEdgeDetectedShader)
+	{
+		m_dsEdgeDetectedShader->Shutdown();
+		delete m_dsEdgeDetectedShader;
+		m_dsEdgeDetectedShader = 0;
+	}
+
+	if (m_dsBloomShader)
+	{
+		m_dsBloomShader->Shutdown();
+		delete m_dsBloomShader;
+		m_dsBloomShader = 0;
+	}
+	if (m_dsMergeOutputShader)
+	{
+		m_dsMergeOutputShader->Shutdown();
+		delete m_dsMergeOutputShader;
+		m_dsMergeOutputShader = 0;
 	}
 
 	return;
@@ -188,13 +241,12 @@ bool ShaderManagerClass::RenderBumpMapShader(ID3D11DeviceContext* deviceContext,
 	return true;
 }
 
-bool ShaderManagerClass::RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-											  CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* texture)
+bool ShaderManagerClass::RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* pdb, ID3D11ShaderResourceView* texture)
 {
 	bool result;
 
 
-	result = m_deferredShading->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
+	result = m_deferredShading->Render(deviceContext, indexCount, shaderMatrixs, pdb, texture);
 	if(!result)
 	{
 		return false;
@@ -202,14 +254,55 @@ bool ShaderManagerClass::RenderDeferredShader(ID3D11DeviceContext* deviceContext
 
 	return true;
 }
-bool ShaderManagerClass::RenderDSLightShader(ID3D11DeviceContext* deviceContext, int indexCount, CXMMATRIX worldMatrix, CXMMATRIX viewMatrix, 
-											 CXMMATRIX projectionMatrix, ID3D11ShaderResourceView* colorTexture, ID3D11ShaderResourceView* normalTexture,
-											 CXMVECTOR lightDirection)
+bool ShaderManagerClass::RenderDSLightShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* pdb, LightClass* light)
 {
 	bool result;
 
 
-	result = m_dsLight->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, colorTexture, normalTexture, lightDirection);
+	result = m_dsLight->Render(deviceContext, indexCount, shaderMatrix, pdb, light);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+
+}
+
+bool ShaderManagerClass::RenderDSEdgeDetectAAShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* pdb, LightClass* light)
+{
+	bool result;
+
+
+	result = m_dsEdgeDetectedShader->Render(deviceContext, indexCount, shaderMatrix, pdb, light);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManagerClass::RenderDSBloomShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* pdb, LightClass* light)
+{
+	bool result;
+
+
+	result = m_dsBloomShader->Render(deviceContext, indexCount, shaderMatrix, pdb, light);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManagerClass::RenderDSMergeOutputShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* pdb, LightClass* light)
+{
+	bool result;
+
+
+	result = m_dsMergeOutputShader->Render(deviceContext, indexCount, shaderMatrix, pdb, light);
 	if(!result)
 	{
 		return false;
