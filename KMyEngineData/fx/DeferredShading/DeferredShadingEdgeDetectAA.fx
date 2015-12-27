@@ -68,7 +68,8 @@ float4 psEDAA(VertexOutput pin) : SV_Target
 	
 	color /= 10.0f;
 	
-	return color;	
+	return color;
+
 }
 
 // === EdgeDetectAA end ===

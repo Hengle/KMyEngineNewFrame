@@ -184,6 +184,9 @@
     <None Include="..\KMyEngineData\fx\texture.fx">
       <Filter>多个材质管理测试shader\FX</Filter>
     </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingScreenQuad.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
     <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingBloom.fx">
       <Filter>延迟渲染Test\fx</Filter>
     </None>
@@ -197,9 +200,6 @@
       <Filter>延迟渲染Test\fx</Filter>
     </None>
     <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingMergeOutput.fx">
-      <Filter>延迟渲染Test\fx</Filter>
-    </None>
-    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingScreenQuad.fx">
       <Filter>延迟渲染Test\fx</Filter>
     </None>
   </ItemGroup>

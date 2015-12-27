@@ -1,9 +1,9 @@
-#include"DeferredShadingScreenQuad.fx"
 
 // *** Bloom begin ***
 cbuffer cbPerFramePS : register(b0)
 {
 	float2 gPixelSize;
+	float2 nouse;
 };
 
 Texture2D gFinalColor : register(t0);
@@ -11,6 +11,11 @@ SamplerState SampleTypePoint : register(s0);
 
 #define NUMPOINTS 7
 
+struct VertexOutput
+{
+    float4 PosH	 : SV_POSITION;
+    float2 TexV  : TEXCOORD;
+};
 
 struct PSOutputBloom
 {
@@ -44,7 +49,7 @@ PSOutputBloom psBloom(VertexOutput pin)
 	
 	pout.vBloom.w = 1.0f;
 	pout.hBloom.w = 1.0f;
-	
+
 	return pout;
 }
 

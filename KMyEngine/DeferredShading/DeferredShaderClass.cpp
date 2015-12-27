@@ -50,6 +50,9 @@ bool DeferredShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCo
 {
 	bool result;
 
+	db->SetRenderTargets(deviceContext);
+	db->ClearRenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
+
 	result = SetShaderParameters(deviceContext, shaderMatrixs, texture);
 	if(!result)
 	{
@@ -271,9 +274,6 @@ bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext
 
 void DeferredShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* db)
 {
-	db->SetRenderTargets(deviceContext);
-	db->ClearRenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
-
 	deviceContext->IASetInputLayout(m_layout);
 
     deviceContext->VSSetShader(m_vertexShader, NULL, 0);
@@ -282,6 +282,10 @@ void DeferredShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int i
 	deviceContext->PSSetSamplers(0, 1, &m_sampleStateWrap);
 
 	deviceContext->DrawIndexed(indexCount, 0, 0);
+
+	ID3D11ShaderResourceView* gNull = NULL;
+	//»Ø¸´SRVÏÖ³¡....
+	deviceContext->PSSetShaderResources(0, 1, &gNull);
 
 	return;
 }

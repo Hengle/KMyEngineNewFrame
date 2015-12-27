@@ -346,13 +346,7 @@ bool CApplicationClass::RenderDeferredShadingTest()
 	m_ShaderManager->RenderDeferredShader(m_D3D->GetDeviceContext(),m_Model2->GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Model2->GetTexture());
 
 
-
 	m_D3D->TurnZBufferOff();
-
-
-	XMStoreFloat4x4(&shaderMatrix.gWorld,XMMatrixIdentity());
-	XMStoreFloat4x4(&shaderMatrix.gView,XMMatrixIdentity());
-	XMStoreFloat4x4(&shaderMatrix.gProj,XMMatrixIdentity());
 
 	m_orthoWindowClass.Render(m_D3D->GetDeviceContext());
 	m_ShaderManager->RenderDSLightShader(m_D3D->GetDeviceContext(),m_orthoWindowClass.GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Light);
@@ -376,23 +370,6 @@ bool CApplicationClass::RenderDeferredShadingTest()
 
 bool CApplicationClass::RenderSceneToTexture()
 {
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
-
-	m_dsBufferClass.SetRenderTargets(m_D3D->GetDeviceContext());
-	m_dsBufferClass.ClearRenderTargets(m_D3D->GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
-
-	worldMatrix = XMMatrixIdentity();
-	viewMatrix = m_Camera->View();
-	projectionMatrix = m_Camera->Proj();
-
-
-	m_Model2->Render(m_D3D->GetDeviceContext());
-
-	//m_ShaderManager->RenderDeferredShader(m_D3D->GetDeviceContext(), m_Model2->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model2->GetTexture());
-
-	m_D3D->SetBackBufferRenderTarget();
-
-	m_D3D->ResetViewport();
 
 	return true;
 }

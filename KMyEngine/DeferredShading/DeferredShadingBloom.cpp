@@ -52,6 +52,7 @@ bool CDeferredShadingBloomClass::Render(ID3D11DeviceContext* deviceContext, int 
 	bool result;
 
 	pdb->SetBloomRenderTargets(deviceContext);
+	pdb->ClearBloomRenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	//result = SetShaderParametersVS();
 	//if(!result)
@@ -224,9 +225,6 @@ bool CDeferredShadingBloomClass::SetShaderParametersPS(ID3D11DeviceContext* devi
 	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFramePS);
 
 	deviceContext->PSSetShaderResources(0, 1, &gFinalColor);
-	//deviceContext->PSSetShaderResources(1, 1, &gNormal);
-	//deviceContext->PSSetShaderResources(2, 1, &specularTexture);
-	//deviceContext->PSSetShaderResources(3, 1, &depthTexture);
 
 	deviceContext->PSSetSamplers(0, 1, &m_sampleStatePoint);	
 
@@ -237,9 +235,11 @@ bool CDeferredShadingBloomClass::SetShaderParametersPS(ID3D11DeviceContext* devi
 
 
 void CDeferredShadingBloomClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* pdb)
-{
-	
+{	
 	deviceContext->DrawIndexed(indexCount, 0, 0);
+
+	ID3D11ShaderResourceView* gNull = NULL;
+	deviceContext->PSSetShaderResources(0, 1, &gNull);
 
 	return;
 }

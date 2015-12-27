@@ -1,4 +1,3 @@
-#include "DeferredShadingScreenQuad.fx"
 
 // *** Merge Output ***
 
@@ -8,6 +7,12 @@ Texture2D gFinalColorAA : register(t2);
 
 SamplerState SampleTypePoint  : register(s0);
 SamplerState SampleTypeLinear : register(s1);
+
+struct VertexOutput
+{
+    float4 PosH	 : SV_POSITION;
+    float2 TexV  : TEXCOORD;
+};
 
 float4 psMergeOutput(VertexOutput pin) : SV_Target
 {

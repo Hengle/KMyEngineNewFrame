@@ -1,17 +1,22 @@
-#include"DeferredShadingScreenQuad.fx"
-
 cbuffer cbPerObject : register(b1)
 {
 	// pixel之间的距离
 	float2 gPixelSize;
 	// 采样权重
 	float gWeight;
+	float nouse;
 };
 // 完成光照之后的图像
 Texture2D gFinalColor : register(t0);
-Texture2D gNormal : register(t1);
+Texture2D gNormal	  : register(t1);
 
 SamplerState SampleTypePoint : register(s0);
+
+struct VertexOutput
+{
+    float4 PosH	 : SV_POSITION;
+    float2 TexV  : TEXCOORD;
+};
 
 
 // *** EdgeDetectAA begin ***
@@ -63,7 +68,8 @@ float4 psEDAA(VertexOutput pin) : SV_Target
 	
 	color /= 10.0f;
 	
-	return color;	
+	return color;
+
 }
 
 // === EdgeDetectAA end ===

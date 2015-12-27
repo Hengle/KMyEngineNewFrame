@@ -54,6 +54,7 @@ bool CDeferredShadingLightShaderClass::Render(ID3D11DeviceContext* deviceContext
 	bool result;
 
 	pdb->SetLightingRenderTarget(deviceContext);
+	pdb->ClearLightingRenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	result = SetShaderParametersVS(deviceContext,shaderMatrix);
 	if(!result)
@@ -246,15 +247,14 @@ bool CDeferredShadingLightShaderClass::SetShaderParametersVS(ID3D11DeviceContext
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	SCB_PEROBJECT_VS* dataPtr;
 
-	XMMATRIX worldMatrix = XMLoadFloat4x4(&shaderMatrix.gWorld);
-	XMMATRIX viewMatrix = XMLoadFloat4x4(&shaderMatrix.gView);
-	XMMATRIX projMatrix = XMLoadFloat4x4(&shaderMatrix.gProj);
-
-	XMMATRIX wvp = worldMatrix * viewMatrix * projMatrix;
+	////XMMATRIX worldMatrix = XMLoadFloat4x4(&shaderMatrix.gWorld);
+	//XMMATRIX viewMatrix = XMLoadFloat4x4(&shaderMatrix.gView);
+	//XMMATRIX projMatrix = XMLoadFloat4x4(&shaderMatrix.gProj);
+	//XMMATRIX wvp = worldMatrix * viewMatrix * projMatrix;
 
 	HR(deviceContext->Map(m_cbPerObjectVS, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 	dataPtr = (SCB_PEROBJECT_VS*)mappedResource.pData;
-	dataPtr->gWorldViewProj = XMMatrixTranspose(wvp);
+	dataPtr->gWorldViewProj = XMMatrixTranspose(XMMatrixIdentity());
 	deviceContext->Unmap(m_cbPerObjectVS, 0);
 
 	deviceContext->IASetInputLayout(m_layout);
@@ -274,8 +274,8 @@ bool CDeferredShadingLightShaderClass::SetShaderParametersPS(ID3D11DeviceContext
 	SCB_PERFRAME_PS* dataPtr;
 
 	XMFLOAT3 lightDirection = light->GetDirection();
-	XMFLOAT3 gDiffuseLight = XMFLOAT3(light->GetDiffuseColor().x,light->GetDiffuseColor().y,light->GetDiffuseColor().z);
-	XMFLOAT3 gSpecularLight = XMFLOAT3(light->GetSpecularColor().x,light->GetSpecularColor().y,light->GetSpecularColor().z);
+	XMFLOAT4 gDiffuseLight = light->GetDiffuseColor();
+	XMFLOAT4 gSpecularLight = light->GetSpecularColor();
 
 
 	ID3D11ShaderResourceView* colorTexture = pdb->GetShaderResourceView(0);
@@ -290,10 +290,11 @@ bool CDeferredShadingLightShaderClass::SetShaderParametersPS(ID3D11DeviceContext
 	dataPtr->gLightDirV = lightDirection;
 	dataPtr->gDiffuseLight = gDiffuseLight;
 	dataPtr->gSpecularLight = gSpecularLight;
+
 	dataPtr->gProjMatrix = XMMatrixTranspose(XMLoadFloat4x4(&shaderMatrix.gProj));
 
 	deviceContext->Unmap(m_cbPerFramePS, 0);
-	deviceContext->PSSetConstantBuffers(0, 1, &m_cbPerFramePS);
+	deviceContext->PSSetConstantBuffers(1, 1, &m_cbPerFramePS);
 
 	deviceContext->PSSetShaderResources(0, 1, &colorTexture);
 	deviceContext->PSSetShaderResources(1, 1, &normalTexture);
@@ -310,9 +311,14 @@ bool CDeferredShadingLightShaderClass::SetShaderParametersPS(ID3D11DeviceContext
 
 void CDeferredShadingLightShaderClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* pdb)
 {
-	
-
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
+	ID3D11ShaderResourceView* gNull = NULL;
+
+	//»Ö¸´SRVÏÖ³¡
+	deviceContext->PSSetShaderResources(0, 1, &gNull);
+	deviceContext->PSSetShaderResources(1, 1, &gNull);
+	deviceContext->PSSetShaderResources(2, 1, &gNull);
+	deviceContext->PSSetShaderResources(3, 1, &gNull);
 	return;
 }

@@ -237,6 +237,10 @@ void CDeferredShadingMergeOutput::RenderShader(ID3D11DeviceContext* deviceContex
 {
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
-
+	ID3D11ShaderResourceView* gNull = NULL;
+	deviceContext->PSSetShaderResources(0, 1, &gNull);
+	deviceContext->PSSetShaderResources(1, 1, &gNull);
+	deviceContext->PSSetShaderResources(2, 1, &gNull);
+	
 	return;
 }

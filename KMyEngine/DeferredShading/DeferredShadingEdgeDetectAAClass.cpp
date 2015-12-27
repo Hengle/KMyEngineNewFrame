@@ -52,6 +52,7 @@ bool DeferredShadingEdgeDetectAAClass::Render(ID3D11DeviceContext* deviceContext
 	bool result;
 
 	pdb->SetEdgeDetectAARenderTarget(deviceContext);
+	pdb->ClearEdgeDetectAARenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
 	result = SetShaderParametersVS();
 	if(!result)
@@ -216,6 +217,8 @@ bool DeferredShadingEdgeDetectAAClass::SetShaderParametersPS(ID3D11DeviceContext
 	ID3D11ShaderResourceView* gFinalColor = pdb->GetLightingSRV();
 	ID3D11ShaderResourceView* gNormal = pdb->GetShaderResourceView(2);
 
+	ID3D11ShaderResourceView* gNull = NULL;
+
 	HR(deviceContext->Map(m_cbPerFramePS, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource));
 	dataPtr = (SCB_PERFRAME_PS*)mappedResource.pData;
 
@@ -227,10 +230,7 @@ bool DeferredShadingEdgeDetectAAClass::SetShaderParametersPS(ID3D11DeviceContext
 	deviceContext->PSSetShaderResources(0, 1, &gFinalColor);
 	deviceContext->PSSetShaderResources(1, 1, &gNormal);
 
-	//deviceContext->PSSetShaderResources(2, 1, &gNull);
-	//deviceContext->PSSetShaderResources(3, 1, &gNull);
-
-	//deviceContext->PSSetSamplers(0, 1, &m_sampleStatePoint);	
+	deviceContext->PSSetSamplers(0, 1, &m_sampleStatePoint);	
 
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
@@ -239,11 +239,14 @@ bool DeferredShadingEdgeDetectAAClass::SetShaderParametersPS(ID3D11DeviceContext
 
 
 void DeferredShadingEdgeDetectAAClass::RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* pdb)
-{
-
-	
+{		
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
+	//»Ö¸´SRV ÏÖ³¡
+	ID3D11ShaderResourceView* gNull = NULL;
 
+	deviceContext->PSSetShaderResources(0, 1, &gNull);
+	deviceContext->PSSetShaderResources(1, 1, &gNull);
+	
 	return;
 }

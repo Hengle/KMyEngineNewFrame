@@ -14,8 +14,10 @@ private:
 	struct SCB_PERFRAME_PS
 	{
 		XMFLOAT3 gLightDirV;
-		XMFLOAT3 gDiffuseLight;
-		XMFLOAT3 gSpecularLight;
+		float nouse;
+
+		XMFLOAT4 gDiffuseLight;
+		XMFLOAT4 gSpecularLight;
 
 		XMMATRIX gProjMatrix;
 	};

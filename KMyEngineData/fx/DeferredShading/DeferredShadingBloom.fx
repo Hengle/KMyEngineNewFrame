@@ -49,7 +49,7 @@ PSOutputBloom psBloom(VertexOutput pin)
 	
 	pout.vBloom.w = 1.0f;
 	pout.hBloom.w = 1.0f;
-	
+
 	return pout;
 }
 
