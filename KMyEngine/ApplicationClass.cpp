@@ -33,9 +33,10 @@ bool CApplicationClass::InitD3D(int width, int heitht, HWND outputWindow,HINSTAN
 	return true;
 }
 
-bool CApplicationClass::DrawScene()
+bool CApplicationClass::DrawScene(int type)
 {
-	Render();
+	//Render();
+	ChooseRenderOption(type);
 
 	Frame();
 	return true;
@@ -92,11 +93,12 @@ bool CApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd,
 		return false;
 	}
 
-	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
+	m_Light->SetAmbientColor(0.5f, 0.5f, 0.5f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_Light->SetDirection(0.0f, 0.0f, -1.0f);
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetSpecularPower(64.0f);
+	m_Light->SetSpecularPower(150.0f);
+
 
 	m_Model1 = new ModelClass;
 	if(!m_Model1)
@@ -226,7 +228,8 @@ bool CApplicationClass::Render()
 {
 	//RenderMultiShaderTest();
 
-	RenderDeferredShadingTest();
+	//ChooseRenderOption();
+	//RenderDeferredShadingTest();
 
 	return true;
 }
@@ -343,7 +346,7 @@ bool CApplicationClass::RenderDeferredShadingTest()
 
 
 	m_Model2->Render(m_D3D->GetDeviceContext());
-	m_ShaderManager->RenderDeferredShader(m_D3D->GetDeviceContext(),m_Model2->GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Model2->GetTexture());
+	m_ShaderManager->RenderDeferredShader(m_D3D->GetDeviceContext(),m_Model2->GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Model2->GetTexture(),m_Model2->GetMaterial());
 
 
 	m_D3D->TurnZBufferOff();
@@ -370,6 +373,63 @@ bool CApplicationClass::RenderDeferredShadingTest()
 
 bool CApplicationClass::RenderSceneToTexture()
 {
+
+	return true;
+}
+
+void CApplicationClass::ChangeLightDir(int type,float value)
+{
+	XMFLOAT3 srcDir = m_Light->GetDirection();
+	if (type == 0)
+	{
+		m_Light->SetDirection(value,srcDir.y,srcDir.z);
+	}
+	if (type ==1)
+	{
+		m_Light->SetDirection(srcDir.x,value,srcDir.z);
+	}
+	if (type ==2)
+	{
+		m_Light->SetDirection(srcDir.x,srcDir.y,value);
+	}
+}
+
+bool CApplicationClass::ChooseRenderOption(int type)
+{
+	if (type == 6)
+	{
+		RenderDeferredShadingTest();
+	}
+	else
+	{
+		XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+		ShaderMatrix shaderMatrix;
+
+		XMStoreFloat4x4(&shaderMatrix.gWorld,XMMatrixIdentity());
+		XMStoreFloat4x4(&shaderMatrix.gView,m_Camera->View());
+		XMStoreFloat4x4(&shaderMatrix.gProj,m_Camera->Proj());
+
+
+		m_Model2->Render(m_D3D->GetDeviceContext());
+		m_ShaderManager->RenderDeferredShader(m_D3D->GetDeviceContext(),m_Model2->GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Model2->GetTexture(),m_Model2->GetMaterial());
+
+
+		m_D3D->TurnZBufferOff();
+
+		m_orthoWindowClass.Render(m_D3D->GetDeviceContext());
+		m_ShaderManager->RenderDSLightShader(m_D3D->GetDeviceContext(),m_orthoWindowClass.GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Light);
+		m_ShaderManager->RenderDSEdgeDetectAAShader(m_D3D->GetDeviceContext(),m_orthoWindowClass.GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Light);
+		m_ShaderManager->RenderDSBloomShader(m_D3D->GetDeviceContext(),m_orthoWindowClass.GetIndexCount(),shaderMatrix,&m_dsBufferClass,m_Light);
+
+
+		m_D3D->SetBackBufferRenderTarget();
+		m_D3D->ResetViewport();
+		m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
+		m_ShaderManager->RenderDSEditorTest(m_D3D->GetDeviceContext(),m_orthoWindowClass.GetIndexCount(),&m_dsBufferClass,type);
+		m_D3D->TurnZBufferOn();
+		m_D3D->EndScene();
+		
+	}
 
 	return true;
 }

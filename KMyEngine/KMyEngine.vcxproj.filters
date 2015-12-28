@@ -102,6 +102,9 @@
     <ClInclude Include="DeferredShading\DeferredShadingMergeOutput.h">
       <Filter>延迟渲染Test</Filter>
     </ClInclude>
+    <ClInclude Include="DeferredShading\DeferredShadingMergeOutputEditorTest.h">
+      <Filter>延迟渲染Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ApplicationClass.cpp">
@@ -173,6 +176,9 @@
     <ClCompile Include="DeferredShading\DeferredShadingMergeOutput.cpp">
       <Filter>延迟渲染Test</Filter>
     </ClCompile>
+    <ClCompile Include="DeferredShading\DeferredShadingMergeOutputEditorTest.cpp">
+      <Filter>延迟渲染Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\KMyEngineData\fx\bumpmap.fx">
@@ -200,6 +206,12 @@
       <Filter>延迟渲染Test\fx</Filter>
     </None>
     <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingMergeOutput.fx">
+      <Filter>延迟渲染Test\fx</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\LightHelper.fx">
+      <Filter>多个材质管理测试shader\FX</Filter>
+    </None>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingMergeOutputEditorTest.fx">
       <Filter>延迟渲染Test\fx</Filter>
     </None>
   </ItemGroup>

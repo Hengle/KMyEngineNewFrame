@@ -1,7 +1,7 @@
-﻿生成启动时间为 2015/12/27 13:59:05。
+﻿生成启动时间为 2015/12/27 21:46:06。
      1>项目“D:\Engine\DX11\MyEngine\KMyEngineNew\KMyEngineNewFrame\KMyEngine\KMyEngine.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
-         E:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ApplicationClass.cpp
+         E:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ApplicationClass.cpp MyTestInterfaces.cpp
          ApplicationClass.cpp
      1>c:\program files (x86)\microsoft directx sdk (june 2010)\include\dxgitype.h(12): warning C4005: “DXGI_STATUS_OCCLUDED”: 宏重定义
                  c:\program files (x86)\windows kits\8.0\include\shared\winerror.h(49449) : 参见“DXGI_STATUS_OCCLUDED”的前一个定义
@@ -59,8 +59,11 @@
                  c:\program files (x86)\windows kits\8.0\include\shared\winerror.h(49793) : 参见“D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS”的前一个定义
      1>c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: “D3D10_ERROR_FILE_NOT_FOUND”: 宏重定义
                  c:\program files (x86)\windows kits\8.0\include\shared\winerror.h(49802) : 参见“D3D10_ERROR_FILE_NOT_FOUND”的前一个定义
-     1>d:\engine\dx11\myengine\kmyenginenew\kmyenginenewframe\kmyengine\applicationclass.cpp(217): warning C4101: “result”: 未引用的局部变量
-     1>d:\engine\dx11\myengine\kmyenginenew\kmyenginenewframe\kmyengine\applicationclass.cpp(335): warning C4101: “result”: 未引用的局部变量
+     1>d:\engine\dx11\myengine\kmyenginenew\kmyenginenewframe\kmyengine\applicationclass.cpp(219): warning C4101: “result”: 未引用的局部变量
+     1>d:\engine\dx11\myengine\kmyenginenew\kmyenginenewframe\kmyengine\applicationclass.cpp(338): warning C4101: “result”: 未引用的局部变量
+         正在生成代码...
+         正在跳过...(未检测到相关更改)
+         MyTestInterfaces.cpp
        Link:
          E:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Engine\DX11\MyEngine\KMyEngineNew\KMyEngineNewFrame\\KMyEngineOutput\Win32\Debug\KMyEngineD.dll" /INCREMENTAL /NOLOGO d3d11.lib d3dx11d.lib D3DCompiler.lib Effects11d.lib dxerr.lib dxgi.lib dxguid.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Engine\DX11\MyEngine\KMyEngineNew\KMyEngineNewFrame\\KMyEngineOutput\Win32\Debug\KMyEngineD.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Engine\DX11\MyEngine\KMyEngineNew\KMyEngineNewFrame\\KMyEngineOutput\Win32\Debug\KMyEngineD.lib" /MACHINE:X86 /DLL Debug\ApplicationClass.obj
          Debug\BumpmapsModelClass.obj
@@ -73,6 +76,7 @@
          Debug\DeferredShadingEdgeDetectAAClass.obj
          Debug\DeferredShadingLightShaderClass.obj
          Debug\DeferredShadingMergeOutput.obj
+         Debug\DeferredShadingMergeOutputEditorTest.obj
          Debug\OrthoWindowClass.obj
          Debug\dllMain.obj
          Debug\GeometryGenerator.obj
@@ -90,4 +94,4 @@
 
 生成成功。
 
-已用时间 00:00:01.80
+已用时间 00:00:01.91

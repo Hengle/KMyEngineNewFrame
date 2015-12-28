@@ -124,6 +124,17 @@ bool ShaderManagerClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+	m_dsEditorTestShader = new CDeferredShadingMergeOutputEditorTest;
+	if (!m_dsEditorTestShader)
+	{
+		return false;
+	}
+	result = m_dsEditorTestShader->Initialize(device,hwnd);
+	if (!result)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -184,6 +195,12 @@ void ShaderManagerClass::Shutdown()
 		delete m_dsMergeOutputShader;
 		m_dsMergeOutputShader = 0;
 	}
+	if (m_dsEditorTestShader)
+	{
+		m_dsEditorTestShader->Shutdown();
+		delete m_dsEditorTestShader;
+		m_dsEditorTestShader = 0;
+	}
 
 	return;
 }
@@ -241,12 +258,12 @@ bool ShaderManagerClass::RenderBumpMapShader(ID3D11DeviceContext* deviceContext,
 	return true;
 }
 
-bool ShaderManagerClass::RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* pdb, ID3D11ShaderResourceView* texture)
+bool ShaderManagerClass::RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* pdb, ID3D11ShaderResourceView* texture,Material gMaterial)
 {
 	bool result;
 
 
-	result = m_deferredShading->Render(deviceContext, indexCount, shaderMatrixs, pdb, texture);
+	result = m_deferredShading->Render(deviceContext, indexCount, shaderMatrixs, pdb, texture,gMaterial);
 	if(!result)
 	{
 		return false;
@@ -303,6 +320,20 @@ bool ShaderManagerClass::RenderDSMergeOutputShader(ID3D11DeviceContext* deviceCo
 
 
 	result = m_dsMergeOutputShader->Render(deviceContext, indexCount, shaderMatrix, pdb, light);
+	if(!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ShaderManagerClass::RenderDSEditorTest(ID3D11DeviceContext* deviceContext,int indexCount,DeferredBuffersClass* pdb,int Option)
+{
+	bool result;
+
+
+	result = m_dsEditorTestShader->Render(deviceContext, indexCount, pdb, Option);
 	if(!result)
 	{
 		return false;

@@ -46,14 +46,14 @@ void DeferredShaderClass::Shutdown()
 }
 
 
-bool DeferredShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* db, ID3D11ShaderResourceView* texture)
+bool DeferredShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* db, ID3D11ShaderResourceView* texture,Material gMaterial)
 {
 	bool result;
 
 	db->SetRenderTargets(deviceContext);
 	db->ClearRenderTargets(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 
-	result = SetShaderParameters(deviceContext, shaderMatrixs, texture);
+	result = SetShaderParameters(deviceContext, shaderMatrixs, texture,gMaterial);
 	if(!result)
 	{
 		return false;
@@ -241,7 +241,7 @@ void DeferredShaderClass::OutputShaderErrorMessage(ID3D10Blob* errorMessage, HWN
 }
 
 
-bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrixs, ID3D11ShaderResourceView* texture)
+bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrixs, ID3D11ShaderResourceView* texture,Material gMaterial)
 {
 	HRESULT result;
     D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -261,11 +261,13 @@ bool DeferredShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
 	dataPtr->gWorldViewProj = XMMatrixTranspose(wvp);
 	dataPtr->gWorldView = XMMatrixTranspose(wv);
+	dataPtr->gMaterial = gMaterial;
     deviceContext->Unmap(m_matrixBuffer, 0);
 
 	bufferNumber = 0;
 
     deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	return true;

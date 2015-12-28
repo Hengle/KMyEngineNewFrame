@@ -18,12 +18,15 @@
 #include "DeferredShading/DeferredShadingEdgeDetectAAClass.h"
 #include "DeferredShading/DeferredShadingBloom.h"
 #include "DeferredShading/DeferredShadingMergeOutput.h"
+#include "DeferredShading/DeferredShadingMergeOutputEditorTest.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ShaderManagerClass
 ////////////////////////////////////////////////////////////////////////////////
 class ShaderManagerClass
 {
+private:
+
 public:
 	ShaderManagerClass();
 	ShaderManagerClass(const ShaderManagerClass&);
@@ -46,24 +49,24 @@ public:
 	//—”≥Ÿ‰÷»æ
 	//////////////////////////////////////////////////////////////////////////
 
-	bool RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* db, ID3D11ShaderResourceView* texture);
+	bool RenderDeferredShader(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* db, ID3D11ShaderResourceView* texture,Material gMaterial);
 	bool RenderDSLightShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
 	bool RenderDSEdgeDetectAAShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
 	bool RenderDSBloomShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
 	bool RenderDSMergeOutputShader(ID3D11DeviceContext* deviceContext,int indexCount, ShaderMatrix shaderMatrix, DeferredBuffersClass* db, LightClass* light);
+	bool RenderDSEditorTest(ID3D11DeviceContext* deviceContext,int indexCount,DeferredBuffersClass* pdb,int Option);
 
 	DeferredShaderClass*				m_deferredShading;
 	CDeferredShadingLightShaderClass*   m_dsLight;
 	DeferredShadingEdgeDetectAAClass*	m_dsEdgeDetectedShader;
 	CDeferredShadingBloomClass*			m_dsBloomShader;
 	CDeferredShadingMergeOutput*		m_dsMergeOutputShader;
+	CDeferredShadingMergeOutputEditorTest* m_dsEditorTestShader;
 
 private:
 	TextureShaderClass* m_TextureShader;
 	LightShaderClass* m_LightShader;
 	BumpMapShaderClass* m_BumpMapShader;
-
-
 };
 
 #endif

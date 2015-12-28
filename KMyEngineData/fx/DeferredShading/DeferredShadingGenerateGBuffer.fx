@@ -1,7 +1,10 @@
+#include"../LightHelper.fx"
 cbuffer cbPerObject : register(b0)
 {
 	float4x4 gWorldViewProj;
 	float4x4 gWorldView;
+
+	Material gMaterial;
 };
 
 Texture2D shaderTexture : register(t0);
@@ -74,7 +77,7 @@ PixelOutput DeferredPixelShader(VertexOutput pin)
 	pout.color = shaderTexture.Sample(SampleTypeWrap, pin.Tex);
 	pout.color.a = 1.0f;
 
-	pout.specular = float4(0.8f, 0.8f, 0.7f, 1.0f);
+	pout.specular = gMaterial.Specular;
 
 	float depth = pin.Depth.x/pin.Depth.y;
 	pout.depth.rgb = float_to_color(depth);

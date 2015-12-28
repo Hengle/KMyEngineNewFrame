@@ -15,6 +15,7 @@ public:
 	bool Init(ITestApp* pApp);
 	bool UnInit();
 
+	void setRenderOption(int type);
 
 protected:
 
@@ -30,6 +31,8 @@ protected:
 	void keyReleaseEvent(QKeyEvent *e);
 	void keyPressEvent(QKeyEvent * e);
 
+	
+
 private:
 
 	bool m_isPressingW;
@@ -39,6 +42,8 @@ private:
 
 	int m_nCurMousePosX;
 	int m_nCurMousePosY;
+
+	int m_d3dRenderOption;
 
 	ITestApp   *m_piTestApp;
 };

@@ -215,7 +215,7 @@ bool DeferredShadingEdgeDetectAAClass::SetShaderParametersPS(ID3D11DeviceContext
 	int backBufferHeight = pdb->GetTextureHeight();
 
 	ID3D11ShaderResourceView* gFinalColor = pdb->GetLightingSRV();
-	ID3D11ShaderResourceView* gNormal = pdb->GetShaderResourceView(2);
+	ID3D11ShaderResourceView* gNormal = pdb->GetShaderResourceView(1);
 
 	ID3D11ShaderResourceView* gNull = NULL;
 

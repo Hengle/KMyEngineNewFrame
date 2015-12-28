@@ -18,6 +18,8 @@ private:
 	{
 		XMMATRIX gWorldViewProj;
 		XMMATRIX gWorldView;
+
+		Material gMaterial;
 	};
 
 public:
@@ -27,14 +29,14 @@ public:
 
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
-	bool Render(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* pdb, ID3D11ShaderResourceView* texture);
+	bool Render(ID3D11DeviceContext* deviceContext, int indexCount,ShaderMatrix shaderMatrixs, DeferredBuffersClass* pdb, ID3D11ShaderResourceView* texture,Material gMaterial);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, WCHAR*, WCHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
 
-	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrixs, ID3D11ShaderResourceView* texture);
+	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, ShaderMatrix shaderMatrixs, ID3D11ShaderResourceView* texture,Material gMaterial);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount,DeferredBuffersClass* pdb);
 
 private:

@@ -60,63 +60,44 @@ float color_to_float(float3 color)
 // uses data from textures (previous render targets)
 float4 psLightStage(VertexOutput pin) : SV_Target
 {
-	//	float2 texcoord = pin.TexV  ;
-	//float4 depthSample = gDepth.Sample(SampleTypePoint,texcoord);
-	//
-	//// depth texture保存normalized device coordinate的depth值
-	//float ndcDepth = clamp(color_to_float(depthSample.xyz),0.0f,1.0f);
-	//
-	//// 计算(恢复)在view space coordinate内的坐标
-	//float3 vPos;
-	//vPos.z = NrmDevZToViewZ(ndcDepth);
-	//vPos.x = NrmDevXToViewX(pin.TexV  .x*2.0f-1.0f,vPos.z);
-	//vPos.y = NrmDevYToViewY(-(pin.TexV  .y*2.0f-1.0f),vPos.z);
-
-	//// Normal(view space)
-	//float4 vNormal = gNormal.Sample(SampleTypePoint,pin.TexV  )*2.0f-1.0f;
-	//float4 diffuse = gDiffuse.Sample(SampleTypePoint,pin.TexV  );	
-	//float4 specular = gSpecular.Sample(SampleTypePoint,pin.TexV  );
-	//
-	//// 注：在view space计算光照，所以eyePos=（0，0，0）
-	//// lookAt = vPos-eyePos = vPos
-	//// toEye = eyePos-vPos = -vPos
-	//
-	////=================================================================
-	//float3 toEye = normalize(float3(0.0f,0.0f,0.0f)-vPos);
-	//
-	//float3 r = reflect(gLightDirV,normalize(vNormal.xyz));
-	//
-	//float t = pow(max(dot(r,toEye),0.0f),specular.w*1000.0f);
-	//
-	//float s = max(dot(-gLightDirV,vNormal.xyz),0.0f);
-	//
-	//float3 specColor = t*(specular.xyz*gSpecularLight);
-	//float3 diffuseColor = s*(diffuse.xyz*gDiffuseLight);
-	//float3 ambientColor = (diffuse.xyz*gDiffuseLight)*0.3f;
-	//
-	//float4 outColor;
-	//outColor.xyz = specColor+diffuseColor+ambientColor;
-	//outColor.a = 1.0f;
-	//
-	//return outColor;
-
-	float4 colors;
-	float4 normals;
-	float3 lightDir;
-	float lightIntensity;
-	float4 outputColor;
-
-	colors = gDiffuse.Sample(SampleTypePoint, pin.TexV);
-	normals = gNormal.Sample(SampleTypePoint, pin.TexV);
+		float2 texcoord = pin.TexV  ;
+	float4 depthSample = gDepth.Sample(SampleTypePoint,texcoord);
 	
-    lightDir = gLightDirV;
-	lightDir = float3(1.0f,1.0f,1.0f);
+	// depth texture保存normalized device coordinate的depth值
+	float ndcDepth = clamp(color_to_float(depthSample.xyz),0.0f,1.0f);
+	
+	// 计算(恢复)在view space coordinate内的坐标
+	float3 vPos;
+	vPos.z = NrmDevZToViewZ(ndcDepth);
+	vPos.x = NrmDevXToViewX(pin.TexV  .x*2.0f-1.0f,vPos.z);
+	vPos.y = NrmDevYToViewY(-(pin.TexV  .y*2.0f-1.0f),vPos.z);
 
-    lightIntensity = saturate(dot(normals.xyz, lightDir));
+	// Normal(view space)
+	float4 vNormal = gNormal.Sample(SampleTypePoint,pin.TexV  )*2.0f-1.0f;
+	float4 diffuse = gDiffuse.Sample(SampleTypePoint,pin.TexV  );	
+	float4 specular = gSpecular.Sample(SampleTypePoint,pin.TexV  );
+	
+	// 注：在view space计算光照，所以eyePos=（0，0，0）
+	// lookAt = vPos-eyePos = vPos
+	// toEye = eyePos-vPos = -vPos
+	
+	//=================================================================
+	float3 toEye = normalize(float3(0.0f,0.0f,0.0f)-vPos);
+	
+	float3 r = reflect(gLightDirV,normalize(vNormal.xyz));
+	
+	float t = pow(max(dot(r,toEye),0.0f),specular.w*1000.0f);
+	
+	float s = max(dot(-gLightDirV,vNormal.xyz),0.0f);
+	
+	float3 specColor = t*(specular.xyz*gSpecularLight);
+	float3 diffuseColor = s*(diffuse.xyz*gDiffuseLight);
+	float3 ambientColor = (diffuse.xyz*gDiffuseLight)*0.3f;
+	
+	float4 outColor;
+	outColor.xyz = specColor+diffuseColor+ambientColor;
+	outColor.a = 1.0f;
+	
+	return outColor;
 
-    outputColor = saturate(colors * lightIntensity);
-
-	float4 colorsT = colors*0.3f +  float4(lightIntensity,0.0f,0.0f,1.0f);
-
-	return outputColor;
 }

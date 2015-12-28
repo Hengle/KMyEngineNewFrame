@@ -92,6 +92,7 @@
     <ClInclude Include="DeferredShading\DeferredShadingEdgeDetectAAClass.h" />
     <ClInclude Include="DeferredShading\DeferredShadingLightShaderClass.h" />
     <ClInclude Include="DeferredShading\DeferredShadingMergeOutput.h" />
+    <ClInclude Include="DeferredShading\DeferredShadingMergeOutputEditorTest.h" />
     <ClInclude Include="DeferredShading\OrthoWindowClass.h" />
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="InputClass.h" />
@@ -117,6 +118,7 @@
     <ClCompile Include="DeferredShading\DeferredShadingEdgeDetectAAClass.cpp" />
     <ClCompile Include="DeferredShading\DeferredShadingLightShaderClass.cpp" />
     <ClCompile Include="DeferredShading\DeferredShadingMergeOutput.cpp" />
+    <ClCompile Include="DeferredShading\DeferredShadingMergeOutputEditorTest.cpp" />
     <ClCompile Include="DeferredShading\OrthoWindowClass.cpp" />
     <ClCompile Include="dllMain.cpp" />
     <ClCompile Include="GeometryGenerator.cpp" />
@@ -158,6 +160,16 @@
       <FileType>Document</FileType>
     </None>
     <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingScreenQuad.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\KMyEngineData\fx\LightHelper.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\KMyEngineData\fx\DeferredShading\DeferredShadingMergeOutputEditorTest.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

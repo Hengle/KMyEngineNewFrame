@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -77,18 +78,51 @@ public:
     QSlider *horizontalSlider_2;
     QPushButton *pushButton_22;
     QWidget *tab_7;
+    QWidget *tab_3;
+    QGroupBox *groupBox_3;
+    QRadioButton *radioButton_3;
+    QRadioButton *radioButton_2;
+    QRadioButton *radioButton;
+    QGroupBox *groupBox_4;
+    QSlider *Slider_LightDirZ;
+    QLabel *label_LightDirZ;
+    QLabel *label_LightDirW;
+    QSlider *Slider_LightDirW;
+    QSlider *Slider_LightDirX;
+    QLabel *label_LightDirX;
+    QSlider *Slider_LightDirY;
+    QLabel *label_LightDirY;
+    QWidget *tab_4;
+    QGroupBox *groupBox_5;
+    QRadioButton *radioButton_4;
+    QRadioButton *radioButton_5;
+    QGroupBox *groupBox_6;
+    QRadioButton *rbtn_ro_differse;
+    QRadioButton *rbtn_ro_normal;
+    QRadioButton *rbtn_ro_specular;
+    QRadioButton *rbtn_ro_depth;
+    QGroupBox *groupBox_7;
+    QCheckBox *cbox_edgeDetectedAll;
+    QGroupBox *groupBox_8;
+    QCheckBox *cbox_light;
+    QGroupBox *groupBox_9;
+    QCheckBox *cbox_bloom;
+    QGroupBox *groupBox_10;
+    QRadioButton *radioButton_10;
+    QRadioButton *radioButton_11;
     QMenuBar *menuBar;
     QMenu *menu;
     QMenu *menu_2;
     QMenu *menu_3;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
+    QButtonGroup *btnGroup_Ro_GBuffer;
 
     void setupUi(QMainWindow *KMyEngineEditorClass)
     {
         if (KMyEngineEditorClass->objectName().isEmpty())
             KMyEngineEditorClass->setObjectName(QStringLiteral("KMyEngineEditorClass"));
-        KMyEngineEditorClass->resize(1340, 858);
+        KMyEngineEditorClass->resize(1510, 945);
         actionXinjianchangjing = new QAction(KMyEngineEditorClass);
         actionXinjianchangjing->setObjectName(QStringLiteral("actionXinjianchangjing"));
         actionChangjingbaocun = new QAction(KMyEngineEditorClass);
@@ -227,6 +261,129 @@ public:
         tab_7 = new QWidget();
         tab_7->setObjectName(QStringLiteral("tab_7"));
         tabWidget->addTab(tab_7, QString());
+        tab_3 = new QWidget();
+        tab_3->setObjectName(QStringLiteral("tab_3"));
+        groupBox_3 = new QGroupBox(tab_3);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setGeometry(QRect(10, 10, 241, 101));
+        radioButton_3 = new QRadioButton(groupBox_3);
+        radioButton_3->setObjectName(QStringLiteral("radioButton_3"));
+        radioButton_3->setGeometry(QRect(50, 80, 131, 16));
+        radioButton_2 = new QRadioButton(groupBox_3);
+        radioButton_2->setObjectName(QStringLiteral("radioButton_2"));
+        radioButton_2->setGeometry(QRect(50, 50, 151, 16));
+        radioButton = new QRadioButton(groupBox_3);
+        radioButton->setObjectName(QStringLiteral("radioButton"));
+        radioButton->setGeometry(QRect(50, 20, 101, 20));
+        radioButton->setChecked(false);
+        groupBox_4 = new QGroupBox(tab_3);
+        groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
+        groupBox_4->setGeometry(QRect(270, 10, 611, 101));
+        Slider_LightDirZ = new QSlider(groupBox_4);
+        Slider_LightDirZ->setObjectName(QStringLiteral("Slider_LightDirZ"));
+        Slider_LightDirZ->setGeometry(QRect(310, 20, 160, 19));
+        Slider_LightDirZ->setMinimum(-100);
+        Slider_LightDirZ->setMaximum(100);
+        Slider_LightDirZ->setPageStep(1);
+        Slider_LightDirZ->setOrientation(Qt::Horizontal);
+        label_LightDirZ = new QLabel(groupBox_4);
+        label_LightDirZ->setObjectName(QStringLiteral("label_LightDirZ"));
+        label_LightDirZ->setGeometry(QRect(490, 20, 91, 16));
+        QFont font;
+        font.setPointSize(9);
+        label_LightDirZ->setFont(font);
+        label_LightDirW = new QLabel(groupBox_4);
+        label_LightDirW->setObjectName(QStringLiteral("label_LightDirW"));
+        label_LightDirW->setGeometry(QRect(490, 60, 91, 16));
+        label_LightDirW->setFont(font);
+        Slider_LightDirW = new QSlider(groupBox_4);
+        Slider_LightDirW->setObjectName(QStringLiteral("Slider_LightDirW"));
+        Slider_LightDirW->setGeometry(QRect(310, 60, 160, 19));
+        Slider_LightDirW->setOrientation(Qt::Horizontal);
+        Slider_LightDirX = new QSlider(groupBox_4);
+        Slider_LightDirX->setObjectName(QStringLiteral("Slider_LightDirX"));
+        Slider_LightDirX->setGeometry(QRect(30, 20, 160, 19));
+        Slider_LightDirX->setMinimum(-100);
+        Slider_LightDirX->setMaximum(100);
+        Slider_LightDirX->setPageStep(1);
+        Slider_LightDirX->setOrientation(Qt::Horizontal);
+        label_LightDirX = new QLabel(groupBox_4);
+        label_LightDirX->setObjectName(QStringLiteral("label_LightDirX"));
+        label_LightDirX->setGeometry(QRect(210, 20, 81, 16));
+        label_LightDirX->setFont(font);
+        Slider_LightDirY = new QSlider(groupBox_4);
+        Slider_LightDirY->setObjectName(QStringLiteral("Slider_LightDirY"));
+        Slider_LightDirY->setGeometry(QRect(30, 60, 160, 19));
+        Slider_LightDirY->setMinimum(-100);
+        Slider_LightDirY->setMaximum(100);
+        Slider_LightDirY->setPageStep(1);
+        Slider_LightDirY->setOrientation(Qt::Horizontal);
+        label_LightDirY = new QLabel(groupBox_4);
+        label_LightDirY->setObjectName(QStringLiteral("label_LightDirY"));
+        label_LightDirY->setGeometry(QRect(210, 60, 71, 21));
+        label_LightDirY->setFont(font);
+        tabWidget->addTab(tab_3, QString());
+        tab_4 = new QWidget();
+        tab_4->setObjectName(QStringLiteral("tab_4"));
+        groupBox_5 = new QGroupBox(tab_4);
+        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
+        groupBox_5->setGeometry(QRect(10, 10, 201, 91));
+        radioButton_4 = new QRadioButton(groupBox_5);
+        radioButton_4->setObjectName(QStringLiteral("radioButton_4"));
+        radioButton_4->setGeometry(QRect(60, 30, 89, 16));
+        radioButton_5 = new QRadioButton(groupBox_5);
+        radioButton_5->setObjectName(QStringLiteral("radioButton_5"));
+        radioButton_5->setGeometry(QRect(60, 60, 89, 16));
+        groupBox_6 = new QGroupBox(tab_4);
+        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
+        groupBox_6->setGeometry(QRect(230, 9, 221, 91));
+        rbtn_ro_differse = new QRadioButton(groupBox_6);
+        btnGroup_Ro_GBuffer = new QButtonGroup(KMyEngineEditorClass);
+        btnGroup_Ro_GBuffer->setObjectName(QStringLiteral("btnGroup_Ro_GBuffer"));
+        btnGroup_Ro_GBuffer->addButton(rbtn_ro_differse);
+        rbtn_ro_differse->setObjectName(QStringLiteral("rbtn_ro_differse"));
+        rbtn_ro_differse->setGeometry(QRect(40, 30, 81, 16));
+        rbtn_ro_differse->setChecked(true);
+        rbtn_ro_normal = new QRadioButton(groupBox_6);
+        btnGroup_Ro_GBuffer->addButton(rbtn_ro_normal);
+        rbtn_ro_normal->setObjectName(QStringLiteral("rbtn_ro_normal"));
+        rbtn_ro_normal->setGeometry(QRect(140, 30, 81, 16));
+        rbtn_ro_specular = new QRadioButton(groupBox_6);
+        btnGroup_Ro_GBuffer->addButton(rbtn_ro_specular);
+        rbtn_ro_specular->setObjectName(QStringLiteral("rbtn_ro_specular"));
+        rbtn_ro_specular->setGeometry(QRect(40, 60, 81, 16));
+        rbtn_ro_depth = new QRadioButton(groupBox_6);
+        btnGroup_Ro_GBuffer->addButton(rbtn_ro_depth);
+        rbtn_ro_depth->setObjectName(QStringLiteral("rbtn_ro_depth"));
+        rbtn_ro_depth->setGeometry(QRect(140, 60, 81, 16));
+        groupBox_7 = new QGroupBox(tab_4);
+        groupBox_7->setObjectName(QStringLiteral("groupBox_7"));
+        groupBox_7->setGeometry(QRect(640, 10, 211, 91));
+        cbox_edgeDetectedAll = new QCheckBox(groupBox_7);
+        cbox_edgeDetectedAll->setObjectName(QStringLiteral("cbox_edgeDetectedAll"));
+        cbox_edgeDetectedAll->setGeometry(QRect(30, 20, 71, 16));
+        groupBox_8 = new QGroupBox(tab_4);
+        groupBox_8->setObjectName(QStringLiteral("groupBox_8"));
+        groupBox_8->setGeometry(QRect(460, 10, 181, 91));
+        cbox_light = new QCheckBox(groupBox_8);
+        cbox_light->setObjectName(QStringLiteral("cbox_light"));
+        cbox_light->setGeometry(QRect(20, 20, 71, 16));
+        groupBox_9 = new QGroupBox(tab_4);
+        groupBox_9->setObjectName(QStringLiteral("groupBox_9"));
+        groupBox_9->setGeometry(QRect(850, 10, 191, 91));
+        cbox_bloom = new QCheckBox(groupBox_9);
+        cbox_bloom->setObjectName(QStringLiteral("cbox_bloom"));
+        cbox_bloom->setGeometry(QRect(30, 20, 71, 16));
+        groupBox_10 = new QGroupBox(tab_4);
+        groupBox_10->setObjectName(QStringLiteral("groupBox_10"));
+        groupBox_10->setGeometry(QRect(1040, 10, 181, 91));
+        radioButton_10 = new QRadioButton(groupBox_10);
+        radioButton_10->setObjectName(QStringLiteral("radioButton_10"));
+        radioButton_10->setGeometry(QRect(30, 30, 89, 16));
+        radioButton_11 = new QRadioButton(groupBox_10);
+        radioButton_11->setObjectName(QStringLiteral("radioButton_11"));
+        radioButton_11->setGeometry(QRect(30, 60, 89, 16));
+        tabWidget->addTab(tab_4, QString());
 
         horizontalLayout_2->addWidget(tabWidget);
 
@@ -243,7 +400,7 @@ public:
         KMyEngineEditorClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(KMyEngineEditorClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1340, 23));
+        menuBar->setGeometry(QRect(0, 0, 1510, 23));
         menu = new QMenu(menuBar);
         menu->setObjectName(QStringLiteral("menu"));
         menu_2 = new QMenu(menuBar);
@@ -266,7 +423,7 @@ public:
 
         retranslateUi(KMyEngineEditorClass);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(KMyEngineEditorClass);
@@ -311,6 +468,40 @@ public:
         pushButton_22->setText(QApplication::translate("KMyEngineEditorClass", "\346\267\273\345\212\240\345\212\250\346\200\201\344\272\221", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("KMyEngineEditorClass", "\345\234\260\345\275\242\347\273\206\350\212\202\351\200\211\351\241\271", 0));
         tabWidget->setTabText(tabWidget->indexOf(tab_7), QApplication::translate("KMyEngineEditorClass", "\345\234\260\345\275\242\351\253\230\345\272\246\347\274\226\350\276\221", 0));
+        groupBox_3->setTitle(QApplication::translate("KMyEngineEditorClass", "\345\261\236\346\200\247\351\200\211\346\213\251", 0));
+        radioButton_3->setText(QApplication::translate("KMyEngineEditorClass", "\346\235\220\350\264\250\345\261\236\346\200\247\357\274\232Diffuse", 0));
+        radioButton_2->setText(QApplication::translate("KMyEngineEditorClass", "\346\235\220\350\264\250\345\261\236\346\200\247\357\274\232Specular", 0));
+        radioButton->setText(QApplication::translate("KMyEngineEditorClass", "\347\201\257\345\205\211\346\226\271\345\220\221", 0));
+        groupBox_4->setTitle(QApplication::translate("KMyEngineEditorClass", "\345\217\202\346\225\260\350\260\203\346\225\264", 0));
+        label_LightDirZ->setText(QApplication::translate("KMyEngineEditorClass", "z", 0));
+#ifndef QT_NO_TOOLTIP
+        label_LightDirW->setToolTip(QString());
+#endif // QT_NO_TOOLTIP
+        label_LightDirW->setText(QApplication::translate("KMyEngineEditorClass", "w", 0));
+#ifndef QT_NO_TOOLTIP
+        Slider_LightDirW->setToolTip(QApplication::translate("KMyEngineEditorClass", "\345\261\236\346\200\247\344\270\272Specular\347\232\204\346\227\266\345\200\231\357\274\214\350\277\231\344\270\252\345\200\274\350\241\250\347\244\272\347\232\204\346\230\257\345\205\211\347\205\247\345\274\272\345\272\246", 0));
+#endif // QT_NO_TOOLTIP
+        label_LightDirX->setText(QApplication::translate("KMyEngineEditorClass", "x", 0));
+        label_LightDirY->setText(QApplication::translate("KMyEngineEditorClass", "y", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("KMyEngineEditorClass", "\345\205\211\347\205\247\346\265\213\350\257\225", 0));
+        groupBox_5->setTitle(QApplication::translate("KMyEngineEditorClass", "\346\270\262\346\237\223\346\226\271\345\274\217", 0));
+        radioButton_4->setText(QApplication::translate("KMyEngineEditorClass", "\345\273\266\350\277\237\346\270\262\346\237\223", 0));
+        radioButton_5->setText(QApplication::translate("KMyEngineEditorClass", "\346\231\256\351\200\232\346\270\262\346\237\223", 0));
+        groupBox_6->setTitle(QApplication::translate("KMyEngineEditorClass", "GBuffer", 0));
+        rbtn_ro_differse->setText(QApplication::translate("KMyEngineEditorClass", "Diffuse", 0));
+        rbtn_ro_normal->setText(QApplication::translate("KMyEngineEditorClass", "Normal", 0));
+        rbtn_ro_specular->setText(QApplication::translate("KMyEngineEditorClass", "Specular", 0));
+        rbtn_ro_depth->setText(QApplication::translate("KMyEngineEditorClass", "Depth", 0));
+        groupBox_7->setTitle(QApplication::translate("KMyEngineEditorClass", "EdgeDetectAA", 0));
+        cbox_edgeDetectedAll->setText(QApplication::translate("KMyEngineEditorClass", "\346\211\247\350\241\214", 0));
+        groupBox_8->setTitle(QApplication::translate("KMyEngineEditorClass", "Lighting", 0));
+        cbox_light->setText(QApplication::translate("KMyEngineEditorClass", "\346\211\247\350\241\214", 0));
+        groupBox_9->setTitle(QApplication::translate("KMyEngineEditorClass", "Bloom", 0));
+        cbox_bloom->setText(QApplication::translate("KMyEngineEditorClass", "\346\211\247\350\241\214", 0));
+        groupBox_10->setTitle(QApplication::translate("KMyEngineEditorClass", "\347\211\251\344\275\223\351\200\211\346\213\251", 0));
+        radioButton_10->setText(QApplication::translate("KMyEngineEditorClass", "\347\220\203", 0));
+        radioButton_11->setText(QApplication::translate("KMyEngineEditorClass", "\347\253\213\346\226\271\344\275\223", 0));
+        tabWidget->setTabText(tabWidget->indexOf(tab_4), QApplication::translate("KMyEngineEditorClass", "\346\270\262\346\237\223\351\200\211\351\241\271", 0));
         menu->setTitle(QApplication::translate("KMyEngineEditorClass", "\345\234\272\346\231\257\346\226\207\344\273\266", 0));
         menu_2->setTitle(QApplication::translate("KMyEngineEditorClass", "\346\250\241\345\236\213\347\274\226\350\276\221\345\231\250", 0));
         menu_3->setTitle(QApplication::translate("KMyEngineEditorClass", "\347\201\257\345\205\211", 0));

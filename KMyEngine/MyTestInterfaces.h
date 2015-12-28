@@ -12,8 +12,10 @@ interface ITestApp
 	virtual void OnMouseDown(int type, int x, int y) = 0;
 	virtual void OnMouseMove(int type, int x, int y) = 0;
 
-	virtual bool DrawScene() = 0;
+	virtual bool DrawScene(int type) = 0;
 	virtual void KeyInput(char  keycode)=0;
+
+	virtual void ChangeLightDir(int type,float value) = 0;
 };
 
 

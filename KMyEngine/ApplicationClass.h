@@ -40,11 +40,12 @@ public:
 	~CApplicationClass();
 
 	bool InitD3D(int width, int heitht, HWND outputWindow,HINSTANCE hinstance);
-	bool DrawScene();
+	bool DrawScene(int type);
 	bool OnResize(int width, int height);
 	void OnMouseDown(int type, int x, int y);
 	void OnMouseMove(int type, int x, int y);
 	void KeyInput(char  keycode);
+	void ChangeLightDir(int type,float value);
 
 	bool Initialize(int width, int height , HWND hwnd,HINSTANCE hinstance);
 	void Shutdown();
@@ -57,6 +58,8 @@ private:
 
 	bool RenderSceneToTexture();
 	bool RenderDeferredShadingTest();
+
+	bool ChooseRenderOption(int option);
 
 private:
 	D3DClass* m_D3D;

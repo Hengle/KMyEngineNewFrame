@@ -39,6 +39,9 @@ public:
 	int GetIndexCount();
 	ID3D11ShaderResourceView* GetTexture();
 
+	Material GetMaterial();
+	void SetMaterial(Material mat);
+
 private:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();
@@ -58,6 +61,8 @@ private:
 
 	int m_vertexCount;
 	int m_indexCount;
+
+	Material m_mat;
 };
 
 #endif

@@ -30,6 +30,8 @@ bool Kd3dWidget::Init(ITestApp* pApp)
 	m_isPressingA = false;
 	m_isPressingD = false;
 
+	m_d3dRenderOption = 0;
+
 	return true;
 }
 
@@ -58,7 +60,7 @@ void Kd3dWidget::paintEvent(QPaintEvent* pEvent)
 		m_piTestApp->KeyInput('d');
 	}
 
-	m_piTestApp->DrawScene();
+	m_piTestApp->DrawScene(m_d3dRenderOption);
 
 
 }
@@ -139,4 +141,9 @@ void Kd3dWidget::keyReleaseEvent(QKeyEvent *e)
 	QWidget::keyPressEvent(e);
 
 	e->ignore();
+}
+
+void Kd3dWidget::setRenderOption(int type)
+{
+	m_d3dRenderOption = type;
 }
